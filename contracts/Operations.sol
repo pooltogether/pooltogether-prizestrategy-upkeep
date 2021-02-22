@@ -30,7 +30,7 @@ contract Operations is AccessControl{
 
     function callOperation(address _target, bytes4 _operation, bytes calldata _data) public payable returns (bytes memory returnData){
         // check operation is supported
-        require(operationSupported[_target], "Operation Not Supported");
+        require(operationSupported[_target] && rewardPerOperation[_operation] > 0 , "Operation not Supported");
 
         
         bytes memory callData = abi.encodePacked(_operation, _data);

@@ -22,10 +22,11 @@ module.exports = async (hardhat) => {
     const namedSigners = await ethers.getNamedSigners()
     const deployerSigner = namedSigners.deployer
 
+    const poolTokenAddress = "0x0cEC1A9154Ff802e7934Fc916Ed7Ca50bDE6844e"
 
-    dim(`deploying operations contract`)
+    dim(`deploying operations contract from ${deployer}`)
     const operationsContractResult = await deploy('Operations', {
-      args: [],
+      args: [poolTokenAddress, deployer],
       from: deployer,
       skipIfAlreadyDeployed: true
     })
