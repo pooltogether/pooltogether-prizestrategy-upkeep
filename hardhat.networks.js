@@ -1,8 +1,15 @@
 const networks = {}
 
 if (process.env.INFURA_API_KEY && process.env.HDWALLET_MNEMONIC) {
+  console.log("loading networks")
   networks.fork = {
     url: 'http://127.0.0.1:8545'
+  }
+
+  networks.localhost = {
+    url: 'http://127.0.0.1:8545',
+    blockGasLimit: 200000000,
+    allowUnlimitedContractSize: true
   }
 
   networks.kovan = {

@@ -18,7 +18,7 @@ contract Operations is AccessControl{
 
 
     modifier onlyDefaultAdmin(){
-        require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender));
+        require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender), "Operations - not default admin");
         _;
     }
 
@@ -30,7 +30,7 @@ contract Operations is AccessControl{
 
     function callOperation(address _target, bytes4 _operation, bytes calldata _data) public payable returns (bytes memory returnData){
         // check operation is supported
-        require(operationSupported[_target] && rewardPerOperation[_operation] > 0 , "Operation not Supported");
+        require(operationSupported[_target] && rewardPerOperation[_operation] > 0 , "Operations - Operation not supported");
 
         
         bytes memory callData = abi.encodePacked(_operation, _data);
@@ -59,12 +59,14 @@ contract Operations is AccessControl{
     function addTargets(address[] calldata _targets) public onlyDefaultAdmin {
         for(uint8 target = 0; target < _targets.length; target++ ){
             operationSupported[_targets[target]] = true;
+            emit TargetUpdated(_targets[target]);
         }
     }
 
     function removeTargets(address[] calldata _targets) public onlyDefaultAdmin{
         for(uint8 target = 0; target < _targets.length; target++ ){
             operationSupported[_targets[target]] = false;
+            emit TargetUpdated(_targets[target]);
         }
     } 
 
