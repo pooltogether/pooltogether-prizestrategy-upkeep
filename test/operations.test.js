@@ -1,6 +1,6 @@
 const { deployMockContract } = require('ethereum-waffle')
 
-const { ethers } = require('ethers')
+const { ethers, BigNumber } = require('ethers')
 const { expect } = require('chai')
 const hre = require('hardhat')
 const { green } = require('chalk')
@@ -23,6 +23,9 @@ describe('Operations', function() {
   const initialMint = "1000000"
   const startAwardFunctionSignature = "0xb9ee1e05" // found by calling etheres.interface.getSighash("startAward()")
   const completeAwardFunctionSignature = '0xdfb2f13b'  // found by calling etheres.interface.getSighash("completeAward()")
+
+  const startAwardReward = "5"
+  const completeAwardReward = "10"
 
 
   let prizePeriodStart = now()
@@ -58,6 +61,8 @@ describe('Operations', function() {
     console.log("deploying mock prize strategy")
     const PeriodicPrizeStrategy = await hre.artifacts.readArtifact("PeriodicPrizeStrategy")
     prizeStrategy = await deployMockContract(wallet, PeriodicPrizeStrategy.abi, overrides)
+    await prizeStrategy.mock.startAward.returns()
+    await prizeStrategy.mock.completeAward.returns()
  
  
     // const intializeResult = await prizeStrategy.initialize(
@@ -76,7 +81,8 @@ describe('Operations', function() {
     it('adds operations to the contract', async () => {
 
       //check OperationUpdated event was emmited
-      await expect(operationsContract.addOrUpdateOperations([startAwardFunctionSignature, completeAwardFunctionSignature], [5, 10]))
+      await expect(operationsContract.addOrUpdateOperations([startAwardFunctionSignature, completeAwardFunctionSignature],
+      [ethers.utils.parseEther(startAwardReward), ethers.utils.parseEther(completeAwardReward)]))
       .to.emit(operationsContract, "OperationUpdated")
 
     })
@@ -130,14 +136,22 @@ describe('Operations', function() {
     let userOperationsContract
     beforeEach(async() =>{
       userOperationsContract = await hre.ethers.getContractAt("Operations", operationsContract.address, wallet3)
+      operationsContract = await hre.ethers.getContractAt("Operations", operationsContract.address, wallet)
+      await operationsContract.addTargets([prizeStrategy.address])
+      await operationsContract.addOrUpdateOperations([startAwardFunctionSignature], [ethers.utils.parseEther(startAwardReward)])
+      await poolToken.transfer(operationsContract.address, ethers.utils.parseEther("100"))
     })
     it('successfully calls startAward() and receives token reward', async() => {
       //check balance before
-      const balanceBeforeOperationCall = await poolToken.balanceOf(wallet3.address)
-      console.log("balance before is ", balanceBeforeOperationCall.toString())
+      const userBalanceBefore = await poolToken.balanceOf(wallet3.address)
 
       // make call
-      // userOperationsContract.callOperation(startAwardFunctionSignature)
+      const userCallResult = await userOperationsContract.callOperation(prizeStrategy.address, startAwardFunctionSignature, [])
+      const userBalanceAfter = await poolToken.balanceOf(wallet3.address)
+
+      const award = BigNumber.from(startAwardReward)
+      
+      expect(userBalanceAfter).to.equal(userBalanceBefore.plus(award))
 
 
     })

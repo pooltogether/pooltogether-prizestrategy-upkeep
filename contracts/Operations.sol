@@ -3,6 +3,7 @@ pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@nomiclabs/buidler/console.sol";
 
 contract Operations is AccessControl{
 
@@ -34,15 +35,18 @@ contract Operations is AccessControl{
 
         
         bytes memory callData = abi.encodePacked(_operation, _data);
+        console.log("here");
         (bool success, bytes memory returnData) = _target.call{value: msg.value}(callData);
-        require(success, "callOperation: execution failed");
+        require(success, "Operations - call operation execution failed");
         // finally reward msg.sender in Pool 
-        IERC20(token).transferFrom(address(this), msg.sender, rewardPerOperation[_operation]);
+        console.log("now rewarding from ", address(this));
+        IERC20(token).transfer(msg.sender, rewardPerOperation[_operation]);
         return returnData;
     }
 
     // add new operations
     function addOrUpdateOperations(bytes4[] calldata operations, uint256[] calldata rewards) public onlyDefaultAdmin {
+        // ensure arrays are same size?
         for(uint8 op = 0; op < operations.length; op++){
             rewardPerOperation[operations[op]] = rewards[op];
             emit OperationUpdated(operations[op], rewards[op]);
