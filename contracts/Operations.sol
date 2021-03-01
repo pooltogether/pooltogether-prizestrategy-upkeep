@@ -1,11 +1,14 @@
-pragma solidity ^0.7.4;
+pragma solidity ^0.7.6;
 pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "./interfaces/KeeperCompatibleInterface.sol";
+
 import "@nomiclabs/buidler/console.sol";
 
-contract Operations is AccessControl{
+
+contract Operations is AccessControl, KeeperCompatibleInterface{
 
     IERC20 public token;
 
@@ -28,34 +31,53 @@ contract Operations is AccessControl{
         token = IERC20(payment_token);
     }
 
+    function checkUpkeep(bytes calldata checkData) override external returns (bool upkeepNeeded, bytes memory performData){
+        // calls startAward ? - this will revert if it is too early to start the award period
 
-    function callOperation(address _target, bytes4 _operation, bytes calldata _data) public payable returns (bytes memory returnData){
-        // check operation is supported
-        require(operationSupported[_target] && rewardPerOperation[_operation] > 0 , "Operations - Operation not supported");
+        // else call completeAward - this will revert if it is too early to start the award period? 
+
+
+
+    }
+
+
+    function performUpkeep(bytes calldata performData) override external{
+        // call startAward or call completeAward?
+
+
+    }
+
+
+
+    // REMOVE notion of callOperation - replaced by perform and check
+
+    // function callOperation(address _target, bytes4 _operation, bytes calldata _data) public payable returns (bytes memory returnData){
+    //     // check operation is supported
+    //     require(operationSupported[_target] && rewardPerOperation[_operation] > 0 , "Operations - Operation not supported");
 
         
-        bytes memory callData = abi.encodePacked(_operation, _data);
-        console.log("here");
-        (bool success, bytes memory returnData) = _target.call{value: msg.value}(callData);
-        require(success, "Operations - call operation execution failed");
-        // finally reward msg.sender in Pool 
-        console.log("now rewarding from ", address(this));
-        IERC20(token).transfer(msg.sender, rewardPerOperation[_operation]);
-        return returnData;
-    }
+    //     bytes memory callData = abi.encodePacked(_operation, _data);
+    //     console.log("here");
+    //     (bool success, bytes memory returnData) = _target.call{value: msg.value}(callData);
+    //     require(success, "Operations - call operation execution failed");
+    //     // finally reward msg.sender in Pool 
+    //     console.log("now rewarding from ", address(this));
+    //     IERC20(token).transfer(msg.sender, rewardPerOperation[_operation]);
+    //     return returnData;
+    // }
 
     // add new operations
     function addOrUpdateOperations(bytes4[] calldata operations, uint256[] calldata rewards) public onlyDefaultAdmin {
         // ensure arrays are same size?
         for(uint8 op = 0; op < operations.length; op++){
-            rewardPerOperation[operations[op]] = rewards[op];
+            // rewardPerOperation[operations[op]] = rewards[op];
             emit OperationUpdated(operations[op], rewards[op]);
         }
     }
 
     function removeOperations(bytes4[] calldata operations) public onlyDefaultAdmin {
         for(uint8 op = 0; op < operations.length; op++ ){
-            delete rewardPerOperation[operations[op]];
+            // delete rewardPerOperation[operations[op]];
             emit OperationUpdated(operations[op], 0);
         }
     }
@@ -74,11 +96,11 @@ contract Operations is AccessControl{
         }
     } 
 
-
+    // REMOVE since Link Keepers will do this functionality?
     // withdraw all balance to specified address
-    function withdraw(address destination) public onlyDefaultAdmin {
-        IERC20(token).transfer(destination, IERC20(token).balanceOf(address(this)));
-    }
+    // function withdraw(address destination) public onlyDefaultAdmin {
+    //     IERC20(token).transfer(destination, IERC20(token).balanceOf(address(this)));
+    // }
 
 
     fallback() external payable {
