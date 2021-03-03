@@ -3,14 +3,15 @@ pragma experimental ABIEncoderV2;
 
 
 import "./interfaces/KeeperCompatibleInterface.sol";
-import "./interfaces/PeriodicPrizeStrategy.sol";
-
+import "./interfaces/PeriodicPrizeStrategyInterface.sol";
+import "./interfaces/PrizePoolRegistryInterface.sol";
+import "./interfaces/PrizePoolInterface.sol";
 
 
 import "@nomiclabs/buidler/console.sol";
 
 
-contract PrizePoolUpkeep is KeeperCompatibleInterface{
+contract PrizePoolUpkeep is KeeperCompatibleInterface {
 
     address public prizePoolRegistry;
 
@@ -19,42 +20,52 @@ contract PrizePoolUpkeep is KeeperCompatibleInterface{
     }
 
     function checkUpkeep(bytes calldata checkData) override external returns (bool upkeepNeeded, bytes memory performData){
-        
-        //forEach pool in prizePool, get the prizeStrategy, call startAward() (this will revert if it is too early to start the award period)
 
-        // else call completeAward - this will revert if it is too early to start the award period? 
+        address[] memory prizePools = PrizePoolRegistryInterface(prizePoolRegistry).getPrizePools();
 
-        // these two can happen out of lockstep
-
-        address[] memory needsStartAward = prizePoolRegistry.checkStartAward();
-
-        address[] memory needsCompleteAward = prizePoolRegistry.checkCompleteAward();
-
-        if(needsStartAward.length > 0 || needsCompleteAward.length > 0){
-            upkeepNeeded = true;
-            if(needsStartAward.length > 0){
-                performData = abi.encode(PeriodicPrizeStrategy.startAward.selector, needsStartAward);
-            }
-
+        // check if canStartAward
+        for(uint256 pool = 0; pool < prizePools.length; pool++){
+            address prizeStrategy = PrizePoolInterface(pool).prizeStrategy();
+            if(PeriodicPrizeStrategyInterface(prizeStrategy).canStartAward()){
+                upkeepNeeded = true;
+                return (upkeepNeeded, performData);
+            } 
         }
-        else{ // is this needed or would upkeepNeeded default to false?
-
+        // check if canCompleteAward
+        for(uint256 pool = 0; pool < prizePools.length; pool++){
+            address prizeStrategy = PrizePoolInterface(pool).prizeStrategy();
+            if(PeriodicPrizeStrategyInterface(prizeStrategy).canCompleteAward()){
+                upkeepNeeded = true;
+                return (upkeepNeeded, performData);
+            } 
         }
-
 
     }
 
 
     function performUpkeep(bytes calldata performData) override external{
     
+        address[] memory prizePools = PrizePoolRegistryInterface(prizePoolRegistry).getPrizePools();
 
+        uint256 batchCounter = 10; //counter for batch
+        uint256 poolIndex = 0;
+        while(batchCounter > 0){
+            address prizeStrategy = PrizePoolInterface(prizePools[poolIndex]).prizeStrategy();            
+            if(PeriodicPrizeStrategyInterface(prizeStrategy).canStartAward()){
+                PeriodicPrizeStrategyInterface(prizeStrategy).startAward();
+                batchCounter--;
+            }
+            else{
+                if(PeriodicPrizeStrategyInterface(prizeStrategy).canCompleteAward()){
+                     PeriodicPrizeStrategyInterface(prizeStrategy).completeAward();
+                     batchCounter--;
+                }
 
-        // while(){
-        //     PeriodicPrizeStategy().startAward()
-        // }
-        
-
-
+            }
+            poolIndex++;
+            
+        }
+  
     }
 
 
