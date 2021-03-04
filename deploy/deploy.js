@@ -22,15 +22,22 @@ module.exports = async (hardhat) => {
     const namedSigners = await ethers.getNamedSigners()
     const deployerSigner = namedSigners.deployer
 
-    const poolTokenAddress = "0x0cEC1A9154Ff802e7934Fc916Ed7Ca50bDE6844e"
 
-    dim(`deploying operations contract from ${deployer}`)
-    const operationsContractResult = await deploy('Operations', {
-      args: [poolTokenAddress, deployer],
+    dim(`deploying PrizePoolRegistry contract from ${deployer}`)
+    const prizePoolRegistry = await deploy('PrizePoolRegistry', {
+      args: [],
       from: deployer,
       skipIfAlreadyDeployed: true
     })
-    green(`Deployed Operations token: ${operationsContractResult.address}`)
+    green(`Deployed PrizePoolRegistry: ${prizePoolRegistry.address}`)  
+
+    dim(`deploying PrizePoolUpkeep contract from ${deployer}`)
+    const prizePoolUpkeep = await deploy('PrizePoolUpkeep', {
+      args: [prizePoolUpkeep.address],
+      from: deployer,
+      skipIfAlreadyDeployed: true
+    })
+    green(`Deployed PrizePoolUpkeep: ${prizePoolUpkeep.address}`)
   
 
 }

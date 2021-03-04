@@ -8,7 +8,7 @@ import "./interfaces/PrizePoolRegistryInterface.sol";
 import "./interfaces/PrizePoolInterface.sol";
 
 
-import "@nomiclabs/buidler/console.sol";
+import "hardhat/console.sol";
 
 
 contract PrizePoolUpkeep is KeeperCompatibleInterface {
@@ -22,10 +22,11 @@ contract PrizePoolUpkeep is KeeperCompatibleInterface {
     function checkUpkeep(bytes calldata checkData) override external returns (bool upkeepNeeded, bytes memory performData){
 
         address[] memory prizePools = PrizePoolRegistryInterface(prizePoolRegistry).getPrizePools();
-
+        console.log("checkUpkeep at address ", prizePools[0]);
         // check if canStartAward
         for(uint256 pool = 0; pool < prizePools.length; pool++){
-            address prizeStrategy = PrizePoolInterface(pool).prizeStrategy();
+            console.log("in loop calling ", pool);
+            address prizeStrategy = PrizePoolInterface(prizePools[pool]).prizeStrategy();
             if(PeriodicPrizeStrategyInterface(prizeStrategy).canStartAward()){
                 upkeepNeeded = true;
                 console.log("returning tru for address ", prizeStrategy);
@@ -34,7 +35,7 @@ contract PrizePoolUpkeep is KeeperCompatibleInterface {
         }
         // check if canCompleteAward
         for(uint256 pool = 0; pool < prizePools.length; pool++){
-            address prizeStrategy = PrizePoolInterface(pool).prizeStrategy();
+            address prizeStrategy = PrizePoolInterface(prizePools[pool]).prizeStrategy();
             if(PeriodicPrizeStrategyInterface(prizeStrategy).canCompleteAward()){
                 upkeepNeeded = true;
                 return (upkeepNeeded, performData);
