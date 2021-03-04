@@ -28,6 +28,7 @@ contract PrizePoolUpkeep is KeeperCompatibleInterface {
             address prizeStrategy = PrizePoolInterface(pool).prizeStrategy();
             if(PeriodicPrizeStrategyInterface(prizeStrategy).canStartAward()){
                 upkeepNeeded = true;
+                console.log("returning tru for address ", prizeStrategy);
                 return (upkeepNeeded, performData);
             } 
         }
