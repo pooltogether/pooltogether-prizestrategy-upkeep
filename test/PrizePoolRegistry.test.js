@@ -1,5 +1,4 @@
 const { deployMockContract } = require('ethereum-waffle')
-
 const { expect } = require('chai')
 const hre = require('hardhat')
 
@@ -20,7 +19,6 @@ describe('PrizePoolRegistry', function() {
   before(async () => {
 
     [wallet, wallet2, wallet3, wallet4] = await hre.ethers.getSigners()
-    console.log("getting registry factory")
     const prizePoolRegistryContractFactory = await hre.ethers.getContractFactory("PrizePoolRegistry", wallet, overrides)
     prizePoolRegistry = await prizePoolRegistryContractFactory.deploy()
     
@@ -37,7 +35,7 @@ describe('PrizePoolRegistry', function() {
 
   })
 
-  describe('Owner able to add/remove prize pools to the registry', () => {
+  describe.only('Owner able to add/remove prize pools to the registry', () => {
     it('adds pools to the registry', async () => {
       await expect(prizePoolRegistry.addPrizePools([prizePool1.address, prizePool2.address]))
       .to.emit(prizePoolRegistry, "PrizePoolAdded")

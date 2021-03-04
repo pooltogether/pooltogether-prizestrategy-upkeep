@@ -22,6 +22,8 @@ module.exports = async (hardhat) => {
     const namedSigners = await ethers.getNamedSigners()
     const deployerSigner = namedSigners.deployer
 
+    const batchSize = 10
+
 
     dim(`deploying PrizePoolRegistry contract from ${deployer}`)
     const prizePoolRegistry = await deploy('PrizePoolRegistry', {
@@ -33,7 +35,7 @@ module.exports = async (hardhat) => {
 
     dim(`deploying PrizePoolUpkeep contract from ${deployer}`)
     const prizePoolUpkeep = await deploy('PrizePoolUpkeep', {
-      args: [prizePoolUpkeep.address],
+      args: [prizePoolUpkeep.address, batchSize],
       from: deployer,
       skipIfAlreadyDeployed: true
     })

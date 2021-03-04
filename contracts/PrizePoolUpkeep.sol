@@ -15,10 +15,16 @@ contract PrizePoolUpkeep is KeeperCompatibleInterface {
 
     address public prizePoolRegistry;
 
-    constructor(address _prizePoolRegistry) public {
+    uint public upkeepBatchSize;
+    
+    constructor(address _prizePoolRegistry, uint256 _upkeepBatchSize) public {
         prizePoolRegistry = _prizePoolRegistry;
+        upkeepBatchSize = _upkeepBatchSize;
     }
 
+    /// @notice Checks if PrizePools require upkeep. Call in a static manner every block by the Chainlink Upkeep network.
+    /// @param checkData Not used in this implementation.
+    /// @return upkeepNeeded as true if performUpkeep() needs to be called, false otherwise. performData returned empty. 
     function checkUpkeep(bytes calldata checkData) override external returns (bool upkeepNeeded, bytes memory performData){
 
         address[] memory prizePools = PrizePoolRegistryInterface(prizePoolRegistry).getPrizePools();
@@ -45,15 +51,22 @@ contract PrizePoolUpkeep is KeeperCompatibleInterface {
     }
 
 
+
+    /// @notice Performs upkeep on the prize pools. 
+    /// @param performData Not used in this implementation.
     function performUpkeep(bytes calldata performData) override external{
-        console.log("performUpkeep");
+
         address[] memory prizePools = PrizePoolRegistryInterface(prizePoolRegistry).getPrizePools();
-console.log("performUpkeep2");
-        uint256 batchCounter = 10; //counter for batch
+     
+        uint256 batchCounter = upkeepBatchSize; //counter for batch
         uint256 poolIndex = 0;
-        while(batchCounter > 0){
-            address prizeStrategy = PrizePoolInterface(prizePools[poolIndex]).prizeStrategy();            
+        
+        while(batchCounter > 0 && poolIndex < prizePools.length){
+            console.log("while loop ",poolIndex);
+            address prizeStrategy = PrizePoolInterface(prizePools[poolIndex]).prizeStrategy();
+            console.log("got prizeStrat address", prizeStrategy);            
             if(PeriodicPrizeStrategyInterface(prizeStrategy).canStartAward()){
+                console.log("calling startAward on ", prizeStrategy);
                 PeriodicPrizeStrategyInterface(prizeStrategy).startAward();
                 batchCounter--;
             }
@@ -69,8 +82,6 @@ console.log("performUpkeep2");
         }
   
     }
-
-
 
     fallback() external payable {
         // no-op
