@@ -47,29 +47,22 @@ describe('PrizePoolUpkeep', function() {
     const PeriodicPrizeStrategy = await hre.artifacts.readArtifact("PeriodicPrizeStrategy")
     prizeStrategy = await deployMockContract(wallet, PeriodicPrizeStrategy.abi, overrides)
     
-    await prizeStrategy.mock.completeAward.returns()
- 
+    await prizeStrategy.mock.canCompleteAward.returns(true)
+    await prizeStrategy.mock.canStartAward.returns(true)
 
   })
 
   describe('able to call checkup keep', () => {
     it('can startAward', async () => {
-
-      await prizeStrategy.mock.startAward.returns()
-
-      await expect(prizePoolUpkeep.checkUpkeep("0x"))
-      // .to.not.be.reverted
-    
+      await expect(prizePoolUpkeep.checkUpkeep("0x")).to.be.true
     })
   })
 
   describe('able to call upkeep keep', () => {
     
     it('can execute startAward', async () => {
-      await prizeStrategy.mock.completeAward.returns()
-      
-      await expect(prizePoolUpkeep.performUpkeep("0x"))
-      // .to.not.be.reverted
+      await prizeStrategy.mock.startAward.returns()
+      await expect(prizePoolUpkeep.performUpkeep("0x")).to.be.true
     })
   })
   

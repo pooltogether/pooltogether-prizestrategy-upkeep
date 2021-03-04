@@ -45,9 +45,9 @@ contract PrizePoolUpkeep is KeeperCompatibleInterface {
 
 
     function performUpkeep(bytes calldata performData) override external{
-    
+        console.log("performUpkeep");
         address[] memory prizePools = PrizePoolRegistryInterface(prizePoolRegistry).getPrizePools();
-
+console.log("performUpkeep2");
         uint256 batchCounter = 10; //counter for batch
         uint256 poolIndex = 0;
         while(batchCounter > 0){
