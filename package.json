@@ -13,7 +13,7 @@
     "prepack": "yarn clean && hardhat compile",
     "postpublish": "PACKAGE_VERSION=$(./scripts/package-version.sh) && git tag -ae v$PACKAGE_VERSION && git push --tags",
     "test": "hardhat test",
-    "coverage": "yarn clean node --max-old-space-size=4096 ./node_modules/.bin/hardhat coverage --network coverage --temp build"
+    "coverage": "hardhat coverage"
   },
   "dependencies": {},
   "devDependencies": {
@@ -25,7 +25,7 @@
     "chalk": "^4.1.0",
     "ethereum-waffle": "^3.2.0\n",
     "ethers": "^5.0.0",
-    "hardhat": "^2.1.0",
+    "hardhat": "^2.1.1",
     "hardhat-abi-exporter": "^2.0.8",
     "hardhat-deploy": "^0.7.0-beta.45",
     "hardhat-deploy-ethers": "^0.3.0-beta.7",
