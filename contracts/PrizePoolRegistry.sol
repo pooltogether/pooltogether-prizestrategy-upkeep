@@ -8,6 +8,9 @@ import "./interfaces/PeriodicPrizeStrategyInterface.sol";
 import "./interfaces/PrizePoolInterface.sol";
 import "./utils/MappedSinglyLinkedList.sol";
 
+
+
+///@title 
 contract PrizePoolRegistry is Ownable{
 
     using MappedSinglyLinkedList for MappedSinglyLinkedList.Mapping;
@@ -23,6 +26,7 @@ contract PrizePoolRegistry is Ownable{
 
 
     /// @notice Returns an array of all prizePools in the linked list
+    ///@return Array of prize pool addresses
     function getPrizePools() external returns(address[] memory){
         return prizePoolList.addressArray();
     } 
@@ -30,7 +34,7 @@ contract PrizePoolRegistry is Ownable{
     /// @notice Adds addresses to the linked list. Will revert if the address is already in the list.  Can only be called by the Registry owner.
     /// @param _prizePools Array of prizePool addresses
     function addPrizePools(address[] calldata _prizePools) public onlyOwner {
-        for(uint8 prizePool = 0; prizePool < _prizePools.length; prizePool++ ){ 
+        for(uint256 prizePool = 0; prizePool < _prizePools.length; prizePool++ ){ 
             prizePoolList.addAddress(_prizePools[prizePool]);
             emit PrizePoolAdded(_prizePools[prizePool]);
         }
@@ -41,12 +45,6 @@ contract PrizePoolRegistry is Ownable{
     /// @param _prizePool The address to remove from the linked list. 
     function removePrizePool(address _previousPrizePool, address _prizePool) public onlyOwner{
         prizePoolList.removeAddress(_previousPrizePool, _prizePool); 
-        emit  PrizePoolRemoved(_prizePool);
+        emit PrizePoolRemoved(_prizePool);
     } 
-
-    
-    fallback() external payable {
-        // no-op
-    }
-
 }

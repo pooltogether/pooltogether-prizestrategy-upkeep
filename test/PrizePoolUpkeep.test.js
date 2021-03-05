@@ -1,5 +1,6 @@
 const { deployMockContract } = require('ethereum-waffle')
 const hre = require('hardhat')
+const { expect } = require('chai')
 
 const SENTINAL = '0x0000000000000000000000000000000000000001'
 
@@ -23,7 +24,7 @@ describe('PrizePoolUpkeep', function() {
     prizePoolRegistry = await prizePoolRegistryContractFactory.deploy()
   
     const prizePoolUpkeepContractFactory = await hre.ethers.getContractFactory("PrizePoolUpkeep", wallet, overrides)
-    prizePoolUpkeep = await prizePoolUpkeepContractFactory.deploy(prizePoolRegistry.address)
+    prizePoolUpkeep = await prizePoolUpkeepContractFactory.deploy(prizePoolRegistry.address, 10)
 
 
     const PrizePool = await hre.artifacts.readArtifact("PrizePool")
@@ -51,13 +52,15 @@ describe('PrizePoolUpkeep', function() {
 
   describe('able to call checkup keep', () => {
     it('can check canStartAward', async () => {
-      await prizePoolUpkeep.checkUpkeep("0x")
-      // await expect(prizePoolUpkeep.checkUpkeep("0x")).to.be.equal(true)
+      await prizeStrategy.mock.canStartAward.returns(true)
+      const resultArr= await prizePoolUpkeep.callStatic.checkUpkeep("0x")
+      expect(resultArr[0]).to.be.equal(true)
     })
     it('can check canCompleteAward', async () => {
+      await prizeStrategy.mock.canCompleteAward.returns(true)
       await prizeStrategy.mock.canStartAward.returns(false)
-      await prizePoolUpkeep.checkUpkeep("0x")
-      // await expect(prizePoolUpkeep.checkUpkeep("0x")).to.be.equal(true)
+      const resultArr= await prizePoolUpkeep.callStatic.checkUpkeep("0x")
+      expect(resultArr[0]).to.be.equal(true)
     })
   })
 
@@ -65,14 +68,14 @@ describe('PrizePoolUpkeep', function() {
     
     it('can execute startAward', async () => {
       await prizeStrategy.mock.canStartAward.returns(true)
-      await prizePoolUpkeep.performUpkeep("0x")
-      // await expect(prizePoolUpkeep.performUpkeep("0x")).to.be.true
+      await prizeStrategy.mock.startAward.revertsWithReason("startAward")
+      await expect(prizePoolUpkeep.performUpkeep("0x")).to.be.revertedWith("startAward")
     })
     it('can execute completeAward', async () => {
+      await prizeStrategy.mock.canCompleteAward.returns(true)
       await prizeStrategy.mock.canStartAward.returns(false)
-      await prizePoolUpkeep.performUpkeep("0x")
-      // expect('completeAward').to.be.calledOnContract(prizeStrategy);
-      // await expect(prizePoolUpkeep.performUpkeep("0x")).to.be.true
+      await prizeStrategy.mock.completeAward.revertsWithReason("completeAward")
+      await expect(prizePoolUpkeep.performUpkeep("0x")).to.be.revertedWith("completeAward")
     })
     
   })

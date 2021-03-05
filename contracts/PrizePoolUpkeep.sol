@@ -6,12 +6,12 @@ import "./interfaces/KeeperCompatibleInterface.sol";
 import "./interfaces/PeriodicPrizeStrategyInterface.sol";
 import "./interfaces/PrizePoolRegistryInterface.sol";
 import "./interfaces/PrizePoolInterface.sol";
-
-
-import "hardhat/console.sol";
+import "./utils/SafeAwardable.sol";
 
 
 contract PrizePoolUpkeep is KeeperCompatibleInterface {
+
+    using SafeAwardable for address;
 
     address public prizePoolRegistry;
 
@@ -28,21 +28,20 @@ contract PrizePoolUpkeep is KeeperCompatibleInterface {
     function checkUpkeep(bytes calldata checkData) override external returns (bool upkeepNeeded, bytes memory performData){
 
         address[] memory prizePools = PrizePoolRegistryInterface(prizePoolRegistry).getPrizePools();
-        console.log("checkUpkeep at address ", prizePools[0]);
+
         // check if canStartAward
         for(uint256 pool = 0; pool < prizePools.length; pool++){
-            console.log("in loop calling ", pool);
+
             address prizeStrategy = PrizePoolInterface(prizePools[pool]).prizeStrategy();
-            if(PeriodicPrizeStrategyInterface(prizeStrategy).canStartAward()){
+            if(prizeStrategy.canStartAward()){
                 upkeepNeeded = true;
-                console.log("returning tru for address ", prizeStrategy);
                 return (upkeepNeeded, performData);
             } 
         }
         // check if canCompleteAward
         for(uint256 pool = 0; pool < prizePools.length; pool++){
             address prizeStrategy = PrizePoolInterface(prizePools[pool]).prizeStrategy();
-            if(PeriodicPrizeStrategyInterface(prizeStrategy).canCompleteAward()){
+            if(prizeStrategy.canCompleteAward()){
                 upkeepNeeded = true;
                 return (upkeepNeeded, performData);
             } 
@@ -62,29 +61,22 @@ contract PrizePoolUpkeep is KeeperCompatibleInterface {
         uint256 poolIndex = 0;
         
         while(batchCounter > 0 && poolIndex < prizePools.length){
-            console.log("while loop ",poolIndex);
+            
             address prizeStrategy = PrizePoolInterface(prizePools[poolIndex]).prizeStrategy();
-            console.log("got prizeStrat address", prizeStrategy);            
-            if(PeriodicPrizeStrategyInterface(prizeStrategy).canStartAward()){
-                console.log("calling startAward on ", prizeStrategy);
+            
+            
+            if(prizeStrategy.canStartAward()){
                 PeriodicPrizeStrategyInterface(prizeStrategy).startAward();
                 batchCounter--;
             }
-            else{
-                if(PeriodicPrizeStrategyInterface(prizeStrategy).canCompleteAward()){
-                     PeriodicPrizeStrategyInterface(prizeStrategy).completeAward();
-                     batchCounter--;
-                }
-
+            else if(prizeStrategy.canCompleteAward()){
+                PeriodicPrizeStrategyInterface(prizeStrategy).completeAward();
+                batchCounter--;
             }
             poolIndex++;
             
         }
   
-    }
-
-    fallback() external payable {
-        // no-op
     }
 
 }
