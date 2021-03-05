@@ -10,8 +10,8 @@ import "./utils/MappedSinglyLinkedList.sol";
 
 
 
-///@title 
-contract PrizePoolRegistry is Ownable{
+///@notice A registry to hold Prize Pool addresses.  Underlying data structure is a singly linked list. 
+contract PrizePoolRegistry is Ownable {
 
     using MappedSinglyLinkedList for MappedSinglyLinkedList.Mapping;
 

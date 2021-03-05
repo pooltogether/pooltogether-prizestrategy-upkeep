@@ -35,24 +35,21 @@ describe('PrizePoolRegistry', function() {
 
   })
 
-  describe.only('Owner able to add/remove prize pools to the registry', () => {
+  describe('Owner able to add/remove prize pools to the registry', () => {
     it('adds pools to the registry', async () => {
       await expect(prizePoolRegistry.addPrizePools([prizePool1.address, prizePool2.address]))
       .to.emit(prizePoolRegistry, "PrizePoolAdded")
       .withArgs(prizePool1.address)
-
     })
 
-    xit('returns all pool addresses registered', async () => {
-      await expect(prizePoolRegistry.getPrizePools())
-      .to.equal([prizePool1.address, prizePool2.address])
-
+    it('returns all pool addresses registered', async () => {
+      const resultArr = await prizePoolRegistry.callStatic.getPrizePools()
+      expect(resultArr).to.deep.equal([prizePool2.address, prizePool1.address])
     })
 
     it('removes a pool from the registry', async () => {
       await expect(prizePoolRegistry.removePrizePool(prizePool2.address, prizePool1.address))
       .to.emit(prizePoolRegistry, "PrizePoolRemoved").withArgs(prizePool1.address)
-
     })
 
     it('reverts when non-owner tries to add a prizePool', async () => {
@@ -63,8 +60,7 @@ describe('PrizePoolRegistry', function() {
       await expect(prizePoolRegistry.connect(wallet2).removePrizePool(prizeStrategy.address, SENTINAL)).to.be.revertedWith("Ownable: caller is not the owner")    
     })
 
-    it('reverts when prizePool already added', async () => {
-      
+    it('reverts when prizePool already added', async () => {      
       await expect(prizePoolRegistry.addPrizePools([prizePool2.address])).to.be.revertedWith("Already added")    
     })
 

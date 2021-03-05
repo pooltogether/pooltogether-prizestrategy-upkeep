@@ -5,7 +5,7 @@ import "../utils/MappedSinglyLinkedList.sol";
 contract MappedSinglyLinkedListExposed {
   using MappedSinglyLinkedList for MappedSinglyLinkedList.Mapping;
 
-  MappedSinglyLinkedList.Mapping list;
+  MappedSinglyLinkedList.Mapping public list;
 
   function initialize() external {
     list.initialize();

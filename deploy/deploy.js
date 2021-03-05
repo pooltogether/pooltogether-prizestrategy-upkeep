@@ -34,8 +34,8 @@ module.exports = async (hardhat) => {
     green(`Deployed PrizePoolRegistry: ${prizePoolRegistry.address}`)  
 
     dim(`deploying PrizePoolUpkeep contract from ${deployer}`)
-    const prizePoolUpkeep = await deploy('PrizePoolUpkeep', {
-      args: [prizePoolUpkeep.address, batchSize],
+    const prizePoolUpkeep = await deploy('PrizeStrategyUpkeep', {
+      args: [prizePoolRegistry.address, batchSize],
       from: deployer,
       skipIfAlreadyDeployed: true
     })

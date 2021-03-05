@@ -9,7 +9,8 @@ import "./interfaces/PrizePoolInterface.sol";
 import "./utils/SafeAwardable.sol";
 
 
-contract PrizePoolUpkeep is KeeperCompatibleInterface {
+///@notice Contract implements Chainlink's Upkeep system interface, automating the upkeep of PrizePools in the associated registry. 
+contract PrizeStrategyUpkeep is KeeperCompatibleInterface {
 
     using SafeAwardable for address;
 
@@ -29,24 +30,21 @@ contract PrizePoolUpkeep is KeeperCompatibleInterface {
 
         address[] memory prizePools = PrizePoolRegistryInterface(prizePoolRegistry).getPrizePools();
 
-        // check if canStartAward
+        // check if canStartAward()
         for(uint256 pool = 0; pool < prizePools.length; pool++){
-
             address prizeStrategy = PrizePoolInterface(prizePools[pool]).prizeStrategy();
             if(prizeStrategy.canStartAward()){
-                upkeepNeeded = true;
-                return (upkeepNeeded, performData);
+                return (true, performData);
             } 
         }
-        // check if canCompleteAward
+        // check if canCompleteAward()
         for(uint256 pool = 0; pool < prizePools.length; pool++){
             address prizeStrategy = PrizePoolInterface(prizePools[pool]).prizeStrategy();
             if(prizeStrategy.canCompleteAward()){
-                upkeepNeeded = true;
-                return (upkeepNeeded, performData);
+                return (true, performData);
             } 
         }
-
+        return (false, performData);
     }
 
 
@@ -64,7 +62,6 @@ contract PrizePoolUpkeep is KeeperCompatibleInterface {
             
             address prizeStrategy = PrizePoolInterface(prizePools[poolIndex]).prizeStrategy();
             
-            
             if(prizeStrategy.canStartAward()){
                 PeriodicPrizeStrategyInterface(prizeStrategy).startAward();
                 batchCounter--;
@@ -73,8 +70,7 @@ contract PrizePoolUpkeep is KeeperCompatibleInterface {
                 PeriodicPrizeStrategyInterface(prizeStrategy).completeAward();
                 batchCounter--;
             }
-            poolIndex++;
-            
+            poolIndex++;            
         }
   
     }
