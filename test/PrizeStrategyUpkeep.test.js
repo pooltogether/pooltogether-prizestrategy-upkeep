@@ -4,6 +4,8 @@ const { expect } = require('chai')
 
 let overrides = { gasLimit: 200000000 }
 
+const SENTINAL = '0x0000000000000000000000000000000000000001'
+
 describe('PrizeStrategyUpkeep', function() {
 
 
@@ -69,7 +71,14 @@ describe('PrizeStrategyUpkeep', function() {
   })
 
   describe('able to call upkeep keep', () => {
-    
+
+    let mockContractFactory, mockContract
+
+    before(async() => {
+      mockContractFactory = await hre.ethers.getContractFactory("MockContract", wallet3, overrides)
+      mockContract = await mockContractFactory.deploy(SENTINAL)
+    })
+  
     it('can execute startAward()', async () => {
       await prizeStrategy.mock.canStartAward.returns(true)
       await prizeStrategy.mock.startAward.revertsWithReason("startAward")
@@ -81,18 +90,30 @@ describe('PrizeStrategyUpkeep', function() {
       await prizeStrategy.mock.completeAward.revertsWithReason("completeAward")
       await expect(prizePoolUpkeep.performUpkeep("0x")).to.be.revertedWith("completeAward")
     })
-    // it('cannot startAward()', async () => {
-    //   await prizeStrategy.mock.canCompleteAward.returns(false)
-    //   // await prizeStrategy.mock.canStartAward.returns(true)
-    //   await prizeStrategy.mock.canStartAward.revertsWithReason("startAward")
-    //   await expect(prizePoolUpkeep.callStatic.performUpkeep("0x")).to.be.revertedWith("startAward")
-    // })
-    // it('cannot completeAward()', async () => {
-    //   await prizeStrategy.mock.canStartAward.returns(false)
-    //   // await prizeStrategy.mock.canCompleteAward.returns(true)
-    //   await prizeStrategy.mock.canCompleteAward.revertsWithReason("2")
-    //   await expect(prizePoolUpkeep.callStatic.performUpkeep("0x")).to.be.revertedWith("2")
-    // })    
+    it('cannot startAward()', async () => {
+      await prizeStrategy.mock.canCompleteAward.returns(false)
+      await prizeStrategy.mock.canStartAward.revertsWithReason("startAward")
+      await expect(prizePoolUpkeep.callStatic.performUpkeep("0x")).to.be.revertedWith("startAward")
+    })
+    it('cannot completeAward()', async () => {
+      await prizeStrategy.mock.canStartAward.returns(false)
+      await prizeStrategy.mock.canCompleteAward.revertsWithReason("2")
+      await expect(prizePoolUpkeep.callStatic.performUpkeep("0x")).to.be.revertedWith("2")
+    })
+    it('does not supportFunction canStartAward', async () => {
+
+      await prizePoolRegistry.addPrizePools([mockContract.address])
+      await prizeStrategy.mock.canCompleteAward.revertsWithReason("2")
+      await expect(prizePoolUpkeep.callStatic.performUpkeep("0x")).to.be.revertedWith("2")
+
+      
+    })    
+    it('does not supportFunction canCompleteAward', async () => {
+      await prizeStrategy.mock.canStartAward.returns(false)
+      await prizeStrategy.mock.canCompleteAward.revertsWithReason("2")
+      await expect(prizePoolUpkeep.callStatic.performUpkeep("0x")).to.be.revertedWith("2")
+    })
+
   })
   
 

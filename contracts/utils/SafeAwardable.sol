@@ -33,6 +33,9 @@ library SafeAwardable{
         if (result.length < 32){
             return (false);
         }
+        if(!success && result.length > 0){
+            revert(string(result));
+        }
         return (success);
     }
 }

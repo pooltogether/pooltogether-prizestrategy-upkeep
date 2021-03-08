@@ -48,10 +48,7 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface {
         }
         return (false, performData);
     }
-
-
-
-    /// @notice Performs upkeep on the prize pools. 
+   /// @notice Performs upkeep on the prize pools. 
     /// @param performData Not used in this implementation.
     function performUpkeep(bytes calldata performData) override external{
 

@@ -13,7 +13,8 @@
     "prepack": "yarn clean && hardhat compile",
     "postpublish": "PACKAGE_VERSION=$(./scripts/package-version.sh) && git tag -ae v$PACKAGE_VERSION && git push --tags",
     "test": "solhint contracts/**/*.sol && hardhat test",
-    "coverage": "hardhat coverage"
+    "coverage": "hardhat coverage",
+    "hint": "solhint \"contracts/**/*.sol\""
   },
   "dependencies": {},
   "devDependencies": {
