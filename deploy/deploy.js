@@ -14,15 +14,15 @@ module.exports = async (hardhat) => {
 
     console.log("running deploy script")
 
+    console.log("network id ", getChainId())
 
     const { getNamedAccounts, deployments, ethers } = hardhat
     const { deploy } = deployments
-    const namedAccounts = await getNamedAccounts()
     const { deployer, MultiSig } = await getNamedAccounts()
     const namedSigners = await ethers.getNamedSigners()
     const deployerSigner = namedSigners.deployer
 
-    const batchSize = 10
+    const batchSize = 5
 
 
     dim(`deploying PrizePoolRegistry contract from ${deployer}`)
