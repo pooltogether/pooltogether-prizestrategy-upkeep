@@ -29,7 +29,7 @@ contract PrizePoolRegistry is Ownable {
 
     /// @notice Returns an array of all prizePools in the linked list
     ///@return Array of prize pool addresses
-    function getPrizePools() external returns(address[] memory){
+    function getPrizePools() view external returns(address[] memory){
         return prizePoolList.addressArray();
     } 
 

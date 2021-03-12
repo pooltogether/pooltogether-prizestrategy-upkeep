@@ -14,7 +14,7 @@ module.exports = async (hardhat) => {
 
     console.log("running deploy script")
 
-    console.log("network id ", getChainId())
+    console.log("network id ", await getChainId())
 
     const { getNamedAccounts, deployments, ethers } = hardhat
     const { deploy } = deployments
@@ -29,17 +29,17 @@ module.exports = async (hardhat) => {
     const prizePoolRegistry = await deploy('PrizePoolRegistry', {
       args: [],
       from: deployer,
-      skipIfAlreadyDeployed: true
+      skipIfAlreadyDeployed: false
     })
     green(`Deployed PrizePoolRegistry: ${prizePoolRegistry.address}`)  
 
-    dim(`deploying PrizePoolUpkeep contract from ${deployer}`)
+    dim(`deploying PrizeStrategyUpkeep contract from ${deployer}`)
     const prizePoolUpkeep = await deploy('PrizeStrategyUpkeep', {
       args: [prizePoolRegistry.address, batchSize],
       from: deployer,
-      skipIfAlreadyDeployed: true
+      skipIfAlreadyDeployed: false
     })
-    green(`Deployed PrizePoolUpkeep: ${prizePoolUpkeep.address}`)
+    green(`Deployed PrizeStrategyUpkeep: ${prizePoolUpkeep.address}`)
   
 
 }

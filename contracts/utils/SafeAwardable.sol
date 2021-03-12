@@ -10,7 +10,7 @@ import "../interfaces/PeriodicPrizeStrategyInterface.sol";
 library SafeAwardable{
 
     ///@return canCompleteAward returns true if the function is supported AND can be completed 
-    function canCompleteAward(address self) internal returns (bool canCompleteAward){
+    function canCompleteAward(address self) internal view returns (bool canCompleteAward){
         if(supportsFunction(self, PeriodicPrizeStrategyInterface.canCompleteAward.selector)){
             return PeriodicPrizeStrategyInterface(self).canCompleteAward();      
         }
@@ -18,7 +18,7 @@ library SafeAwardable{
     }
 
     ///@return canStartAward returns true if the function is supported AND can be started, false otherwise
-    function canStartAward(address self) internal returns (bool canStartAward){
+    function canStartAward(address self) internal view returns (bool canStartAward){
         if(supportsFunction(self, PeriodicPrizeStrategyInterface.canStartAward.selector)){
             return PeriodicPrizeStrategyInterface(self).canStartAward();
         }
@@ -27,7 +27,7 @@ library SafeAwardable{
     
     ///@param selector is the function selector to check against
     ///@return success returns true if function is implemented, false otherwise
-    function supportsFunction(address self, bytes4 selector) internal returns (bool success){
+    function supportsFunction(address self, bytes4 selector) internal view returns (bool success){
         bytes memory encodedParams = abi.encodeWithSelector(selector);
         (bool success, bytes memory result) = self.staticcall{ gas: 30000 }(encodedParams);
         if (result.length < 32){

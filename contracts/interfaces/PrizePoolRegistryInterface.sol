@@ -3,5 +3,5 @@
 pragma solidity ^0.7.6;
 
 interface PrizePoolRegistryInterface {
-    function getPrizePools() external returns(address[] memory);
+    function getPrizePools() external view returns(address[] memory);
 }
