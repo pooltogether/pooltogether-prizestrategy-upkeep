@@ -18,7 +18,7 @@ module.exports = async (hardhat) => {
 
     const { getNamedAccounts, deployments, ethers } = hardhat
     const { deploy } = deployments
-    const { deployer, MultiSig } = await getNamedAccounts()
+    const { deployer } = await getNamedAccounts()
     const namedSigners = await ethers.getNamedSigners()
     const deployerSigner = namedSigners.deployer
 
@@ -41,5 +41,6 @@ module.exports = async (hardhat) => {
     })
     green(`Deployed PrizeStrategyUpkeep: ${prizePoolUpkeep.address}`)
   
+    // do we want to add the governance prize pools and transfer ownership in here
 
 }
