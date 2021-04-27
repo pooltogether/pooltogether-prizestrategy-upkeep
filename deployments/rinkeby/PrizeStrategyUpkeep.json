@@ -1,0 +1,172 @@
+{
+  "address": "0x8dd576A7cC0cdd89F49eD05700f06C7b4d1d7326",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_prizePoolRegistry",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_upkeepBatchSize",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes",
+          "name": "checkData",
+          "type": "bytes"
+        }
+      ],
+      "name": "checkUpkeep",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "upkeepNeeded",
+          "type": "bool"
+        },
+        {
+          "internalType": "bytes",
+          "name": "performData",
+          "type": "bytes"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes",
+          "name": "performData",
+          "type": "bytes"
+        }
+      ],
+      "name": "performUpkeep",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "prizePoolRegistry",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "upkeepBatchSize",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0xa3dfe8b6a617a0fe97d01186f59142e164d14a13edeb2a18051723b2ff62822d",
+  "receipt": {
+    "to": null,
+    "from": "0xE0F4217390221aF47855E094F6e112D43C8698fE",
+    "contractAddress": "0x8dd576A7cC0cdd89F49eD05700f06C7b4d1d7326",
+    "transactionIndex": 6,
+    "gasUsed": "620559",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0xe3f2fa981ad4e20c982237b3d3124be71db0640baf44b7e36094486e922e9c10",
+    "transactionHash": "0xa3dfe8b6a617a0fe97d01186f59142e164d14a13edeb2a18051723b2ff62822d",
+    "logs": [],
+    "blockNumber": 8488448,
+    "cumulativeGasUsed": "987887",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [
+    "0x8a0537562aadDF2a6Adb969565F1F0C4117462e8",
+    5
+  ],
+  "solcInputHash": "20d3358fd77b25249d09dbdeb2d71edd",
+  "metadata": "{\"compiler\":{\"version\":\"0.7.6+commit.7338295f\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_prizePoolRegistry\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_upkeepBatchSize\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"checkData\",\"type\":\"bytes\"}],\"name\":\"checkUpkeep\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"upkeepNeeded\",\"type\":\"bool\"},{\"internalType\":\"bytes\",\"name\":\"performData\",\"type\":\"bytes\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"performData\",\"type\":\"bytes\"}],\"name\":\"performUpkeep\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"prizePoolRegistry\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"upkeepBatchSize\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"checkUpkeep(bytes)\":{\"params\":{\"checkData\":\"Not used in this implementation.\"},\"returns\":{\"upkeepNeeded\":\"as true if performUpkeep() needs to be called, false otherwise. performData returned empty. \"}},\"performUpkeep(bytes)\":{\"params\":{\"performData\":\"Not used in this implementation.\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"checkUpkeep(bytes)\":{\"notice\":\"Checks if PrizePools require upkeep. Call in a static manner every block by the Chainlink Upkeep network.\"},\"performUpkeep(bytes)\":{\"notice\":\"Performs upkeep on the prize pools. \"}},\"notice\":\"Contract implements Chainlink's Upkeep system interface, automating the upkeep of PrizePools in the associated registry. \",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/PrizeStrategyUpkeep.sol\":\"PrizeStrategyUpkeep\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/PrizeStrategyUpkeep.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.7.6;\\npragma experimental ABIEncoderV2;\\n\\n\\nimport \\\"./interfaces/KeeperCompatibleInterface.sol\\\";\\nimport \\\"./interfaces/PeriodicPrizeStrategyInterface.sol\\\";\\nimport \\\"./interfaces/PrizePoolRegistryInterface.sol\\\";\\nimport \\\"./interfaces/PrizePoolInterface.sol\\\";\\nimport \\\"./utils/SafeAwardable.sol\\\";\\n\\n\\n///@notice Contract implements Chainlink's Upkeep system interface, automating the upkeep of PrizePools in the associated registry. \\ncontract PrizeStrategyUpkeep is KeeperCompatibleInterface {\\n\\n    using SafeAwardable for address;\\n\\n    address public prizePoolRegistry;\\n\\n    uint public upkeepBatchSize;\\n    \\n    constructor(address _prizePoolRegistry, uint256 _upkeepBatchSize) public {\\n        prizePoolRegistry = _prizePoolRegistry;\\n        upkeepBatchSize = _upkeepBatchSize;\\n    }\\n\\n    /// @notice Checks if PrizePools require upkeep. Call in a static manner every block by the Chainlink Upkeep network.\\n    /// @param checkData Not used in this implementation.\\n    /// @return upkeepNeeded as true if performUpkeep() needs to be called, false otherwise. performData returned empty. \\n    function checkUpkeep(bytes calldata checkData) view override external returns (bool upkeepNeeded, bytes memory performData){ // check view\\n\\n        address[] memory prizePools = PrizePoolRegistryInterface(prizePoolRegistry).getPrizePools();\\n\\n        // check if canStartAward()\\n        for(uint256 pool = 0; pool < prizePools.length; pool++){\\n            address prizeStrategy = PrizePoolInterface(prizePools[pool]).prizeStrategy();\\n            if(prizeStrategy.canStartAward()){\\n                return (true, performData);\\n            } \\n        }\\n        // check if canCompleteAward()\\n        for(uint256 pool = 0; pool < prizePools.length; pool++){\\n            address prizeStrategy = PrizePoolInterface(prizePools[pool]).prizeStrategy();\\n            if(prizeStrategy.canCompleteAward()){\\n                return (true, performData);\\n            } \\n        }\\n        return (false, performData);\\n    }\\n   /// @notice Performs upkeep on the prize pools. \\n    /// @param performData Not used in this implementation.\\n    function performUpkeep(bytes calldata performData) override external{\\n\\n        address[] memory prizePools = PrizePoolRegistryInterface(prizePoolRegistry).getPrizePools();\\n     \\n        uint256 batchCounter = upkeepBatchSize; //counter for batch\\n        uint256 poolIndex = 0;\\n        \\n        while(batchCounter > 0 && poolIndex < prizePools.length){\\n            \\n            address prizeStrategy = PrizePoolInterface(prizePools[poolIndex]).prizeStrategy();\\n            \\n            if(prizeStrategy.canStartAward()){\\n                PeriodicPrizeStrategyInterface(prizeStrategy).startAward();\\n                batchCounter--;\\n            }\\n            else if(prizeStrategy.canCompleteAward()){\\n                PeriodicPrizeStrategyInterface(prizeStrategy).completeAward();\\n                batchCounter--;\\n            }\\n            poolIndex++;            \\n        }\\n  \\n    }\\n\\n}\\n\\n\\n\",\"keccak256\":\"0xac4ba5bc9cd9f86b5ae3e2e8a18f8a49fa2606a8035019769ca482ffaed42a4e\",\"license\":\"MIT\"},\"contracts/interfaces/KeeperCompatibleInterface.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity 0.7.6;\\n\\ninterface KeeperCompatibleInterface {\\n\\n  /**\\n   * @notice method that is simulated by the keepers to see if any work actually\\n   * needs to be performed. This method does does not actually need to be\\n   * executable, and since it is only ever simulated it can consume lots of gas.\\n   * @dev To ensure that it is never called, you may want to add the\\n   * cannotExecute modifier from KeeperBase to your implementation of this\\n   * method.\\n   * @param checkData specified in the upkeep registration so it is always the\\n   * same for a registered upkeep. This can easily be broken down into specific\\n   * arguments using `abi.decode`, so multiple upkeeps can be registered on the\\n   * same contract and easily differentiated by the contract.\\n   * @return upkeepNeeded boolean to indicate whether the keeper should call\\n   * performUpkeep or not.\\n   * @return performData bytes that the keeper should call performUpkeep with, if\\n   * upkeep is needed. If you would like to encode data to decode later, try\\n   * `abi.encode`.\\n   */\\n  function checkUpkeep(\\n    bytes calldata checkData\\n  )\\n    external\\n    returns (\\n      bool upkeepNeeded,\\n      bytes memory performData\\n    );\\n  /**\\n   * @notice method that is actually executed by the keepers, via the registry.\\n   * The data returned by the checkUpkeep simulation will be passed into\\n   * this method to actually be executed.\\n   * @dev The input to this method should not be trusted, and the caller of the\\n   * method should not even be restricted to any single registry. Anyone should\\n   * be able call it, and the input should be validated, there is no guarantee\\n   * that the data passed in is the performData returned from checkUpkeep. This\\n   * could happen due to malicious keepers, racing keepers, or simply a state\\n   * change while the performUpkeep transaction is waiting for confirmation.\\n   * Always validate the data passed in.\\n   * @param performData is the data which was passed back from the checkData\\n   * simulation. If it is encoded, it can easily be decoded into other types by\\n   * calling `abi.decode`. This data should not be trusted, and should be\\n   * validated against the contract's current state.\\n   */\\n  function performUpkeep(\\n    bytes calldata performData\\n  ) external;\\n}\",\"keccak256\":\"0x5174919ce142bffa1517f63837e932ce18224d3b4cda828e0d88ff8a5b99d920\",\"license\":\"MIT\"},\"contracts/interfaces/PeriodicPrizeStrategyInterface.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.7.6;\\n\\ninterface PeriodicPrizeStrategyInterface {\\n  function startAward() external;\\n  function completeAward() external;\\n  function canStartAward() external view returns (bool);\\n  function canCompleteAward() external view returns (bool);\\n}\",\"keccak256\":\"0x109f0a01f57f08936e7bb94fe357fa71e7237794f6f8576c37c773a80dcd155f\",\"license\":\"MIT\"},\"contracts/interfaces/PrizePoolInterface.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.7.6;\\n\\ninterface PrizePoolInterface {\\n    function prizeStrategy() external view returns (address);\\n}\",\"keccak256\":\"0x25c3deefae7b4f2270303b5646e28f49922853ae946173ca2032173bd1844210\",\"license\":\"MIT\"},\"contracts/interfaces/PrizePoolRegistryInterface.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.7.6;\\n\\ninterface PrizePoolRegistryInterface {\\n    function getPrizePools() external view returns(address[] memory);\\n}\",\"keccak256\":\"0x620c3e31149cdf62170e43f825aa8802a87ce7e677cd6c0c1c0722e45e6fe8ed\",\"license\":\"MIT\"},\"contracts/utils/SafeAwardable.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.7.6;\\npragma experimental ABIEncoderV2;\\n\\nimport \\\"../interfaces/PeriodicPrizeStrategyInterface.sol\\\";\\n\\n\\n///@notice Wrapper library for address that checks that the address supports canStartAward() and canCompleteAward() before calling\\nlibrary SafeAwardable{\\n\\n    ///@return canCompleteAward returns true if the function is supported AND can be completed \\n    function canCompleteAward(address self) internal view returns (bool canCompleteAward){\\n        if(supportsFunction(self, PeriodicPrizeStrategyInterface.canCompleteAward.selector)){\\n            return PeriodicPrizeStrategyInterface(self).canCompleteAward();      \\n        }\\n        return false;\\n    }\\n\\n    ///@return canStartAward returns true if the function is supported AND can be started, false otherwise\\n    function canStartAward(address self) internal view returns (bool canStartAward){\\n        if(supportsFunction(self, PeriodicPrizeStrategyInterface.canStartAward.selector)){\\n            return PeriodicPrizeStrategyInterface(self).canStartAward();\\n        }\\n        return false;\\n    }\\n    \\n    ///@param selector is the function selector to check against\\n    ///@return success returns true if function is implemented, false otherwise\\n    function supportsFunction(address self, bytes4 selector) internal view returns (bool success){\\n        bytes memory encodedParams = abi.encodeWithSelector(selector);\\n        (bool success, bytes memory result) = self.staticcall{ gas: 30000 }(encodedParams);\\n        if (result.length < 32){\\n            return (false);\\n        }\\n        if(!success && result.length > 0){\\n            revert(string(result));\\n        }\\n        return (success);\\n    }\\n}\",\"keccak256\":\"0xf5e2d50a8057812732975074254054c6b7717a97f34ec9be494a4c86663137e5\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50604051610a0a380380610a0a83398101604081905261002f91610058565b600080546001600160a01b0319166001600160a01b039390931692909217909155600155610090565b6000806040838503121561006a578182fd5b82516001600160a01b0381168114610080578283fd5b6020939093015192949293505050565b61096b8061009f6000396000f3fe608060405234801561001057600080fd5b506004361061004c5760003560e01c80632dc41821146100515780634585e33b1461006f5780636e04ff0d14610084578063ad06337f146100a5575b600080fd5b6100596100ba565b60405161006691906108fc565b60405180910390f35b61008261007d3660046107fd565b6100c0565b005b6100976100923660046107fd565b6102ea565b6040516100669291906108c6565b6100ad61050a565b60405161006691906108b2565b60015481565b60008060009054906101000a90046001600160a01b03166001600160a01b031663a28e62196040518163ffffffff1660e01b815260040160006040518083038186803b15801561010f57600080fd5b505afa158015610123573d6000803e3d6000fd5b505050506040513d6000823e601f3d908101601f1916820160405261014b9190810190610728565b60015490915060005b6000821180156101645750825181105b156102e357600083828151811061017757fe5b60200260200101516001600160a01b03166398bf3eb66040518163ffffffff1660e01b815260040160206040518083038186803b1580156101b757600080fd5b505afa1580156101cb573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906101ef9190610707565b9050610203816001600160a01b0316610519565b1561026857806001600160a01b031663b9ee1e056040518163ffffffff1660e01b8152600401600060405180830381600087803b15801561024357600080fd5b505af1158015610257573d6000803e3d6000fd5b505060001990940193506102da9050565b61027a816001600160a01b03166105b2565b156102da57806001600160a01b031663dfb2f13b6040518163ffffffff1660e01b8152600401600060405180830381600087803b1580156102ba57600080fd5b505af11580156102ce573d6000803e3d6000fd5b50506000199094019350505b50600101610154565b5050505050565b6000606060008060009054906101000a90046001600160a01b03166001600160a01b031663a28e62196040518163ffffffff1660e01b815260040160006040518083038186803b15801561033d57600080fd5b505afa158015610351573d6000803e3d6000fd5b505050506040513d6000823e601f3d908101601f191682016040526103799190810190610728565b905060005b815181101561043b57600082828151811061039557fe5b60200260200101516001600160a01b03166398bf3eb66040518163ffffffff1660e01b815260040160206040518083038186803b1580156103d557600080fd5b505afa1580156103e9573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061040d9190610707565b9050610421816001600160a01b0316610519565b156104325760019450505050610503565b5060010161037e565b5060005b81518110156104fc57600082828151811061045657fe5b60200260200101516001600160a01b03166398bf3eb66040518163ffffffff1660e01b815260040160206040518083038186803b15801561049657600080fd5b505afa1580156104aa573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906104ce9190610707565b90506104e2816001600160a01b03166105b2565b156104f35760019450505050610503565b5060010161043f565b5060009250505b9250929050565b6000546001600160a01b031681565b600061052c826343b7ae3f60e11b610603565b156105a957816001600160a01b031663876f5c7e6040518163ffffffff1660e01b815260040160206040518083038186803b15801561056a57600080fd5b505afa15801561057e573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906105a291906107dd565b90506105ad565b5060005b919050565b60006105c582636a74f10760e01b610603565b156105a957816001600160a01b0316636a74f1076040518163ffffffff1660e01b815260040160206040518083038186803b15801561056a57600080fd5b60408051600481526024810182526020810180516001600160e01b03166001600160e01b03198516179052905160009190829081906001600160a01b0387169061753090610652908690610896565b6000604051808303818686fa925050503d806000811461068e576040519150601f19603f3d011682016040523d82523d6000602084013e610693565b606091505b50915091506020815110156106ae57600093505050506106ea565b811580156106bd575060008151115b156106e5578060405162461bcd60e51b81526004016106dc91906108e9565b60405180910390fd5b509150505b92915050565b80516001600160a01b03811681146105ad57600080fd5b600060208284031215610718578081fd5b610721826106f0565b9392505050565b6000602080838503121561073a578182fd5b825167ffffffffffffffff80821115610751578384fd5b818501915085601f830112610764578384fd5b81518181111561077057fe5b8381026040518582820101818110858211171561078957fe5b604052828152858101935084860182860187018a10156107a7578788fd5b8795505b838610156107d0576107bc816106f0565b8552600195909501949386019386016107ab565b5098975050505050505050565b6000602082840312156107ee578081fd5b81518015158114610721578182fd5b6000806020838503121561080f578081fd5b823567ffffffffffffffff80821115610826578283fd5b818501915085601f830112610839578283fd5b813581811115610847578384fd5b866020828501011115610858578384fd5b60209290920196919550909350505050565b60008151808452610882816020860160208601610905565b601f01601f19169290920160200192915050565b600082516108a8818460208701610905565b9190910192915050565b6001600160a01b0391909116815260200190565b60008315158252604060208301526108e1604083018461086a565b949350505050565b600060208252610721602083018461086a565b90815260200190565b60005b83811015610920578181015183820152602001610908565b8381111561092f576000848401525b5050505056fea2646970667358221220284a45238fc96aca0313f43e0dfaeb7fed8259a5e229b35ba6d07c17c26e8d2564736f6c63430007060033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061004c5760003560e01c80632dc41821146100515780634585e33b1461006f5780636e04ff0d14610084578063ad06337f146100a5575b600080fd5b6100596100ba565b60405161006691906108fc565b60405180910390f35b61008261007d3660046107fd565b6100c0565b005b6100976100923660046107fd565b6102ea565b6040516100669291906108c6565b6100ad61050a565b60405161006691906108b2565b60015481565b60008060009054906101000a90046001600160a01b03166001600160a01b031663a28e62196040518163ffffffff1660e01b815260040160006040518083038186803b15801561010f57600080fd5b505afa158015610123573d6000803e3d6000fd5b505050506040513d6000823e601f3d908101601f1916820160405261014b9190810190610728565b60015490915060005b6000821180156101645750825181105b156102e357600083828151811061017757fe5b60200260200101516001600160a01b03166398bf3eb66040518163ffffffff1660e01b815260040160206040518083038186803b1580156101b757600080fd5b505afa1580156101cb573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906101ef9190610707565b9050610203816001600160a01b0316610519565b1561026857806001600160a01b031663b9ee1e056040518163ffffffff1660e01b8152600401600060405180830381600087803b15801561024357600080fd5b505af1158015610257573d6000803e3d6000fd5b505060001990940193506102da9050565b61027a816001600160a01b03166105b2565b156102da57806001600160a01b031663dfb2f13b6040518163ffffffff1660e01b8152600401600060405180830381600087803b1580156102ba57600080fd5b505af11580156102ce573d6000803e3d6000fd5b50506000199094019350505b50600101610154565b5050505050565b6000606060008060009054906101000a90046001600160a01b03166001600160a01b031663a28e62196040518163ffffffff1660e01b815260040160006040518083038186803b15801561033d57600080fd5b505afa158015610351573d6000803e3d6000fd5b505050506040513d6000823e601f3d908101601f191682016040526103799190810190610728565b905060005b815181101561043b57600082828151811061039557fe5b60200260200101516001600160a01b03166398bf3eb66040518163ffffffff1660e01b815260040160206040518083038186803b1580156103d557600080fd5b505afa1580156103e9573d6000803e3d6000fd5b505050506040513d601f19601f8201168201806040525081019061040d9190610707565b9050610421816001600160a01b0316610519565b156104325760019450505050610503565b5060010161037e565b5060005b81518110156104fc57600082828151811061045657fe5b60200260200101516001600160a01b03166398bf3eb66040518163ffffffff1660e01b815260040160206040518083038186803b15801561049657600080fd5b505afa1580156104aa573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906104ce9190610707565b90506104e2816001600160a01b03166105b2565b156104f35760019450505050610503565b5060010161043f565b5060009250505b9250929050565b6000546001600160a01b031681565b600061052c826343b7ae3f60e11b610603565b156105a957816001600160a01b031663876f5c7e6040518163ffffffff1660e01b815260040160206040518083038186803b15801561056a57600080fd5b505afa15801561057e573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906105a291906107dd565b90506105ad565b5060005b919050565b60006105c582636a74f10760e01b610603565b156105a957816001600160a01b0316636a74f1076040518163ffffffff1660e01b815260040160206040518083038186803b15801561056a57600080fd5b60408051600481526024810182526020810180516001600160e01b03166001600160e01b03198516179052905160009190829081906001600160a01b0387169061753090610652908690610896565b6000604051808303818686fa925050503d806000811461068e576040519150601f19603f3d011682016040523d82523d6000602084013e610693565b606091505b50915091506020815110156106ae57600093505050506106ea565b811580156106bd575060008151115b156106e5578060405162461bcd60e51b81526004016106dc91906108e9565b60405180910390fd5b509150505b92915050565b80516001600160a01b03811681146105ad57600080fd5b600060208284031215610718578081fd5b610721826106f0565b9392505050565b6000602080838503121561073a578182fd5b825167ffffffffffffffff80821115610751578384fd5b818501915085601f830112610764578384fd5b81518181111561077057fe5b8381026040518582820101818110858211171561078957fe5b604052828152858101935084860182860187018a10156107a7578788fd5b8795505b838610156107d0576107bc816106f0565b8552600195909501949386019386016107ab565b5098975050505050505050565b6000602082840312156107ee578081fd5b81518015158114610721578182fd5b6000806020838503121561080f578081fd5b823567ffffffffffffffff80821115610826578283fd5b818501915085601f830112610839578283fd5b813581811115610847578384fd5b866020828501011115610858578384fd5b60209290920196919550909350505050565b60008151808452610882816020860160208601610905565b601f01601f19169290920160200192915050565b600082516108a8818460208701610905565b9190910192915050565b6001600160a01b0391909116815260200190565b60008315158252604060208301526108e1604083018461086a565b949350505050565b600060208252610721602083018461086a565b90815260200190565b60005b83811015610920578181015183820152602001610908565b8381111561092f576000848401525b5050505056fea2646970667358221220284a45238fc96aca0313f43e0dfaeb7fed8259a5e229b35ba6d07c17c26e8d2564736f6c63430007060033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {
+      "checkUpkeep(bytes)": {
+        "params": {
+          "checkData": "Not used in this implementation."
+        },
+        "returns": {
+          "upkeepNeeded": "as true if performUpkeep() needs to be called, false otherwise. performData returned empty. "
+        }
+      },
+      "performUpkeep(bytes)": {
+        "params": {
+          "performData": "Not used in this implementation."
+        }
+      }
+    },
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "checkUpkeep(bytes)": {
+        "notice": "Checks if PrizePools require upkeep. Call in a static manner every block by the Chainlink Upkeep network."
+      },
+      "performUpkeep(bytes)": {
+        "notice": "Performs upkeep on the prize pools. "
+      }
+    },
+    "notice": "Contract implements Chainlink's Upkeep system interface, automating the upkeep of PrizePools in the associated registry. ",
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 255,
+        "contract": "contracts/PrizeStrategyUpkeep.sol:PrizeStrategyUpkeep",
+        "label": "prizePoolRegistry",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_address"
+      },
+      {
+        "astId": 257,
+        "contract": "contracts/PrizeStrategyUpkeep.sol:PrizeStrategyUpkeep",
+        "label": "upkeepBatchSize",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_uint256"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      }
+    }
+  }
+}

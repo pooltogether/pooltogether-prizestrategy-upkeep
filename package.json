@@ -1,6 +1,6 @@
 {
   "name": "@pooltogether/operations-contracts",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Operations contracts for the PoolTogether protocol",
   "author": "Aodhgan Gleeson",
   "license": "MIT",
@@ -9,9 +9,9 @@
     "deploy": "hardhat deploy --network",
     "verify": "hardhat etherscan-verify --license MIT --solc-input --network",
     "start-fork": "rm -rf deployments/localhost && FORK_ENABLED=true hardhat node --no-reset --no-deploy",
-    "clean": "rm -rf artifacts cache build",
+    "clean": "rm -rf artifacts cache build abis",
     "fork-run": "hardhat run --network localhost",
-    "prepack": "yarn clean && hardhat compile",
+    "prepack": "rm -rf build cache && hardhat compile",
     "postpublish": "PACKAGE_VERSION=$(./scripts/package-version.sh) && git tag -ae v$PACKAGE_VERSION && git push --tags",
     "test": "solhint contracts/**/*.sol && hardhat test",
     "coverage": "hardhat coverage",
@@ -28,11 +28,19 @@
     "ethereum-waffle": "^3.2.0\n",
     "ethers": "^5.0.0",
     "hardhat": "^2.1.1",
-    "hardhat-abi-exporter": "^2.0.8",
+    "hardhat-abi-exporter": "^2.2.1",
     "hardhat-deploy": "^0.7.0-beta.45",
     "hardhat-deploy-ethers": "^0.3.0-beta.7",
     "mocha-junit-reporter": "^2.0.0",
     "solhint": "^3.3.3",
     "solidity-coverage": "^0.7.15"
-  }
+  },
+  "files": [
+    "README.MD",
+    "LICENSE",
+    "abis/**",
+    "contracts/**",
+    "deployments/**",
+    "deploy/**"
+  ]
 }
