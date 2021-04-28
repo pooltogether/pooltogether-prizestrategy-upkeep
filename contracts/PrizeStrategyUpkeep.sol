@@ -10,17 +10,19 @@ import "./interfaces/PrizePoolRegistryInterface.sol";
 import "./interfaces/PrizePoolInterface.sol";
 import "./utils/SafeAwardable.sol";
 
+import "@pooltogether/pooltogether-generic-registry/contracts/AddressRegistry.sol";
+
 
 ///@notice Contract implements Chainlink's Upkeep system interface, automating the upkeep of PrizePools in the associated registry. 
 contract PrizeStrategyUpkeep is KeeperCompatibleInterface {
 
     using SafeAwardable for address;
 
-    address public prizePoolRegistry;
+    AddressRegistry public prizePoolRegistry;
 
     uint public upkeepBatchSize;
     
-    constructor(address _prizePoolRegistry, uint256 _upkeepBatchSize) public {
+    constructor(AddressRegistry _prizePoolRegistry, uint256 _upkeepBatchSize) public {
         prizePoolRegistry = _prizePoolRegistry;
         upkeepBatchSize = _upkeepBatchSize;
     }
@@ -30,7 +32,7 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface {
     /// @return upkeepNeeded as true if performUpkeep() needs to be called, false otherwise. performData returned empty. 
     function checkUpkeep(bytes calldata checkData) view override external returns (bool upkeepNeeded, bytes memory performData){ // check view
 
-        address[] memory prizePools = PrizePoolRegistryInterface(prizePoolRegistry).getPrizePools();
+        address[] memory prizePools = prizePoolRegistry.getAddresses();
 
         // check if canStartAward()
         for(uint256 pool = 0; pool < prizePools.length; pool++){
@@ -52,8 +54,8 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface {
     /// @param performData Not used in this implementation.
     function performUpkeep(bytes calldata performData) override external{
 
-        address[] memory prizePools = PrizePoolRegistryInterface(prizePoolRegistry).getPrizePools();
-     
+        address[] memory prizePools = prizePoolRegistry.getAddresses();
+
         uint256 batchCounter = upkeepBatchSize; //counter for batch
         uint256 poolIndex = 0;
         
