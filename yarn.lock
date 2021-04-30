@@ -621,6 +621,11 @@
     deploy-eip-1820 "1.0.0"
     sortition-sum-tree-factory "0.1.0"
 
+"@pooltogether/pooltogether-generic-registry@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@pooltogether/pooltogether-generic-registry/-/pooltogether-generic-registry-1.0.7.tgz#a3b419cf5568b0688b3905039974328d4145c299"
+  integrity sha512-RWUd17GK+iLVWv79tnfQffP0Ib7Da/7OGTXcN0FOzZbtrbNxidnWloTidYnbS/fGwtBDj7+AcP/S1YTNaRyDaw==
+
 "@pooltogether/pooltogether-rng-contracts@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@pooltogether/pooltogether-rng-contracts/-/pooltogether-rng-contracts-1.0.0.tgz#191d155dc960559cce06b7ec3b0f9ed2caed0f46"
@@ -4610,6 +4615,11 @@ hardhat-abi-exporter@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/hardhat-abi-exporter/-/hardhat-abi-exporter-2.2.1.tgz#98ad242d08987d34416c6315729f36f9d544e4fa"
   integrity sha512-Um7+RPvJEj+OqWjPoPKlTTkO1Akr10pqpgMk8Pw2jz2wrGv5XQBGNW5aQgGVDUosYktUIWDaEhcwwFKbFsir9A==
+
+hardhat-dependency-compiler@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/hardhat-dependency-compiler/-/hardhat-dependency-compiler-1.1.1.tgz#0bfe713d450a7fdad14a210b7a9b8a32e56cc744"
+  integrity sha512-2xubH8aPojhMGbILFlfL28twu6l/5Tyrj4Dpkogvycse6YegKW9GuGA3rnbPH0KP+Nv2xT626ZuR2Ys+w3ifPw==
 
 hardhat-deploy-ethers@^0.3.0-beta.7:
   version "0.3.0-beta.7"

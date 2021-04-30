@@ -20,8 +20,8 @@ describe('PrizeStrategyUpkeep', function() {
 
     [wallet, wallet2, wallet3, wallet4] = await hre.ethers.getSigners()
   
-    const prizePoolRegistryContractFactory = await hre.ethers.getContractFactory("PrizePoolRegistry", wallet, overrides)
-    prizePoolRegistry = await prizePoolRegistryContractFactory.deploy()
+    const prizePoolRegistryContractFactory = await hre.ethers.getContractFactory("AddressRegistry", wallet, overrides)
+    prizePoolRegistry = await prizePoolRegistryContractFactory.deploy("Prize Pool", wallet.address)
   
     const prizePoolUpkeepContractFactory = await hre.ethers.getContractFactory("PrizeStrategyUpkeep", wallet, overrides)
     prizePoolUpkeep = await prizePoolUpkeepContractFactory.deploy(prizePoolRegistry.address, 10)
@@ -32,7 +32,7 @@ describe('PrizeStrategyUpkeep', function() {
     prizePool2 = await deployMockContract(wallet, PrizePool.abi, overrides)
 
     
-    await prizePoolRegistry.addPrizePools([prizePool1.address, prizePool2.address])
+    await prizePoolRegistry.addAddresses([prizePool1.address, prizePool2.address])
 
 
     const PeriodicPrizeStrategy = await hre.artifacts.readArtifact("PeriodicPrizeStrategyInterface")
@@ -70,6 +70,18 @@ describe('PrizeStrategyUpkeep', function() {
     })
   })
 
+  describe('able to update the upkeepBatchSize', () => {
+    it('owner can update', async () => {
+      await expect(prizePoolUpkeep.updateUpkeepBatchSize(3))
+      .to.emit(prizePoolUpkeep, "UpkeepBatchSizeUpdated")
+      .withArgs(3)
+    })
+    it('non-owner cannot update', async () => {
+      await expect(prizePoolUpkeep.connect(wallet2).updateUpkeepBatchSize(3))
+      .to.be.reverted
+    })
+  })
+
   describe('able to call upkeep keep', () => {
 
     let mockContractFactory, mockContract
@@ -102,7 +114,7 @@ describe('PrizeStrategyUpkeep', function() {
     })
     it('does not supportFunction canStartAward', async () => {
 
-      await prizePoolRegistry.addPrizePools([mockContract.address])
+      await prizePoolRegistry.addAddresses([mockContract.address])
       await prizeStrategy.mock.canCompleteAward.revertsWithReason("2")
       await expect(prizePoolUpkeep.callStatic.performUpkeep("0x")).to.be.revertedWith("2")
 
