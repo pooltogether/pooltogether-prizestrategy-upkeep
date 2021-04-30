@@ -70,6 +70,18 @@ describe('PrizeStrategyUpkeep', function() {
     })
   })
 
+  describe('able to update the upkeepBatchSize', () => {
+    it('owner can update', async () => {
+      await expect(prizePoolUpkeep.updateUpkeepBatchSize(3))
+      .to.emit(prizePoolUpkeep, "UpkeepBatchSizeUpdated")
+      .withArgs(3)
+    })
+    it('non-owner cannot update', async () => {
+      await expect(prizePoolUpkeep.connect(wallet2).updateUpkeepBatchSize(3))
+      .to.be.reverted
+    })
+  })
+
   describe('able to call upkeep keep', () => {
 
     let mockContractFactory, mockContract

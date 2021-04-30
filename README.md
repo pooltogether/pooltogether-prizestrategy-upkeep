@@ -1,7 +1,7 @@
 # PoolTogether PrizePool Upkeep
 
 [![Coverage Status](https://coveralls.io/repos/github/pooltogether/pooltogether-operations-contracts/badge.svg?branch=main)](https://coveralls.io/github/pooltogether/pooltogether-operations-contracts?branch=main)
-
+![Tests](https://github.com/pooltogether/pooltogether-prizepool-upkeep/actions/workflows/main.yml/badge.svg)
 
 PoolTogether Operations contracts is PoolTogether's integration with ChainLinks upkeep system.
 
