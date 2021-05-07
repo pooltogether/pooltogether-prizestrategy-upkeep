@@ -22,9 +22,11 @@ module.exports = async (hardhat) => {
     const namedSigners = await ethers.getNamedSigners()
     const deployerSigner = namedSigners.deployer
 
-    const batchSize = 5
+    const batchSize = 3
 
     dim(`deploying PrizeStrategyUpkeep contract from ${deployer}`)
+    console.log("prizePoolRegistry at ", prizePoolRegistry)
+
     const prizePoolUpkeep = await deploy('PrizeStrategyUpkeep', {
       args: [prizePoolRegistry, batchSize],
       from: deployer,
@@ -32,6 +34,4 @@ module.exports = async (hardhat) => {
     })
     green(`Deployed PrizeStrategyUpkeep: ${prizePoolUpkeep.address}`)
   
-    // do we want to add the governance prize pools and transfer ownership in here?
-
 }

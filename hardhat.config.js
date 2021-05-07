@@ -50,6 +50,7 @@ module.exports = {
       4: "0x72c9aA4c753fc36cbF3d1fF6fEc0bC44ad41D7f2"
     },
     prizePoolRegistry: {
+      1 : "0x34733851E2047F8d0e1aa91124A6f9EaDc54D253",
       4: "0xF76f17682888a738a6DF40aa63ac2b4B1a380831"
     }
   },

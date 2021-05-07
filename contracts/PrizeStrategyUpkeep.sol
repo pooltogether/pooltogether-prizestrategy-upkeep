@@ -11,8 +11,7 @@ import "./interfaces/PrizePoolInterface.sol";
 import "./utils/SafeAwardable.sol";
 
 import "@pooltogether/pooltogether-generic-registry/contracts/AddressRegistry.sol";
-import "@openzeppelin/contracts/access/Ownable.sol"
-;
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 ///@notice Contract implements Chainlink's Upkeep system interface, automating the upkeep of PrizePools in the associated registry. 
 contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
@@ -30,11 +29,16 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
     /// @notice Emitted when the upkeepBatchSize has been changed
     event UpkeepBatchSizeUpdated(uint256 upkeepBatchSize);
 
+    /// @notice Emitted when the prize pool registry has been changed
+    event UpkeepPrizePoolRegistryUpdated(AddressRegistry prizePoolRegistry);
+
 
     constructor(AddressRegistry _prizePoolRegistry, uint256 _upkeepBatchSize) Ownable() public {
         prizePoolRegistry = _prizePoolRegistry;
+        emit UpkeepPrizePoolRegistryUpdated(_prizePoolRegistry);
+
         upkeepBatchSize = _upkeepBatchSize;
-        UpkeepBatchSizeUpdated(_upkeepBatchSize);
+        emit UpkeepBatchSizeUpdated(_upkeepBatchSize);
     }
 
 
@@ -94,6 +98,14 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
     function updateUpkeepBatchSize(uint256 _upkeepBatchSize) external onlyOwner {
         upkeepBatchSize = _upkeepBatchSize;
         emit UpkeepBatchSizeUpdated(_upkeepBatchSize);
+    }
+
+
+    /// @notice Updates the prize pool registry
+    /// @param _prizePoolRegistry New registry address
+    function updatePrizePoolRegistry(AddressRegistry _prizePoolRegistry) external onlyOwner {
+        prizePoolRegistry = _prizePoolRegistry;
+        emit UpkeepPrizePoolRegistryUpdated(_prizePoolRegistry);
     }
 
 }
