@@ -50,7 +50,7 @@ module.exports = {
       4: "0x72c9aA4c753fc36cbF3d1fF6fEc0bC44ad41D7f2"
     },
     prizePoolRegistry: {
-      4: "0xb9D70C3d7E4453Cc679D8A91145a28782268f229"
+      4: "0xF76f17682888a738a6DF40aa63ac2b4B1a380831"
     }
   },
   networks,
