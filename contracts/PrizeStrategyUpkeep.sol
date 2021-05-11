@@ -26,11 +26,20 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
     /// @dev Set accordingly to prevent out-of-gas transactions during calls to performUpkeep
     uint256 public upkeepBatchSize;
 
+    /// @notice Stores the last upkeep block number
+    uint256 public upkeepLastUpkeepBlockNumber;
+
+    /// @notice Stores the last upkeep block number
+    uint256 public upkeepMinimumBlockInterval;
+
     /// @notice Emitted when the upkeepBatchSize has been changed
     event UpkeepBatchSizeUpdated(uint256 upkeepBatchSize);
 
     /// @notice Emitted when the prize pool registry has been changed
     event UpkeepPrizePoolRegistryUpdated(AddressRegistry prizePoolRegistry);
+
+    /// @notice Emitted when the Upkeep Minimum Block interval is updated
+    event UpkeepMinimumBlockIntervalUpdated(uint256 upkeepMinimumBlockInterval);
 
 
     constructor(AddressRegistry _prizePoolRegistry, uint256 _upkeepBatchSize) Ownable() public {
@@ -70,24 +79,37 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
     /// @param performData Not used in this implementation.
     function performUpkeep(bytes calldata performData) override external {
 
+        uint256 _upkeepLastUpkeepBlockNumber = upkeepLastUpkeepBlockNumber;
+        require(block.number > _upkeepLastUpkeepBlockNumber + upkeepMinimumBlockInterval);
+
         address[] memory prizePools = prizePoolRegistry.getAddresses();
 
         uint256 batchCounter = upkeepBatchSize; //counter for batch
+
         uint256 poolIndex = 0;
         
+        uint256 updatedUpkeepBlockNumber;
+
         while(batchCounter > 0 && poolIndex < prizePools.length){
             
             address prizeStrategy = PrizePoolInterface(prizePools[poolIndex]).prizeStrategy();
             
             if(prizeStrategy.canStartAward()){
                 PeriodicPrizeStrategyInterface(prizeStrategy).startAward();
+                updatedUpkeepBlockNumber = block.number;
                 batchCounter--;
             }
             else if(prizeStrategy.canCompleteAward()){
                 PeriodicPrizeStrategyInterface(prizeStrategy).completeAward();
+                updatedUpkeepBlockNumber = block.number;
                 batchCounter--;
             }
             poolIndex++;            
+        }
+
+        // SSTORE upkeepLastUpkeepBlockNumber once
+        if(_upkeepLastUpkeepBlockNumber != updatedUpkeepBlockNumber){
+            upkeepLastUpkeepBlockNumber = updatedUpkeepBlockNumber;
         }
   
     }
@@ -106,6 +128,14 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
     function updatePrizePoolRegistry(AddressRegistry _prizePoolRegistry) external onlyOwner {
         prizePoolRegistry = _prizePoolRegistry;
         emit UpkeepPrizePoolRegistryUpdated(_prizePoolRegistry);
+    }
+
+
+    /// @notice Updates the upkeep minimum interval blocks
+    /// @param _upkeepMinimumBlockInterval New upkeepMinimumBlockInterval
+    function updateUpkeepMinimumBlockInterval(uint256 _upkeepMinimumBlockInterval) external onlyOwner {
+        upkeepMinimumBlockInterval = _upkeepMinimumBlockInterval;
+        emit UpkeepMinimumBlockIntervalUpdated(_upkeepMinimumBlockInterval);
     }
 
 }

@@ -82,7 +82,31 @@ describe('PrizeStrategyUpkeep', function() {
     })
   })
 
-  describe('able to call upkeep keep', () => {
+  describe('able to update the upkeepMinimumBlockInterval', () => {
+    it('owner can update', async () => {
+      await expect(prizePoolUpkeep.updateUpkeepMinimumBlockInterval(10))
+      .to.emit(prizePoolUpkeep, "UpkeepMinimumBlockIntervalUpdated")
+      .withArgs(10)
+    })
+    it('non-owner cannot update', async () => {
+      await expect(prizePoolUpkeep.connect(wallet2).updateUpkeepMinimumBlockInterval(3))
+      .to.be.reverted
+    })
+  })
+
+  describe('able to update the prize pool registry', () => {
+    // it('owner can update the registry', async () => {
+    //   await expect(prizePoolUpkeep.updatePrizePoolRegistry(prizePoolRegistry.address))
+    //   .to.emit(prizePoolUpkeep, "UpkeepPrizePoolRegistryUpdated")
+    //   .withArgs(prizePoolRegistry)
+    // })
+    it('non-owner cannot update', async () => {
+      await expect(prizePoolUpkeep.connect(wallet2).updatePrizePoolRegistry(SENTINAL))
+      .to.be.reverted
+    })
+  })
+
+  describe('able to call upkeep performUpkeep()', () => {
 
     let mockContractFactory, mockContract
 
@@ -120,6 +144,12 @@ describe('PrizeStrategyUpkeep', function() {
 
       
     })    
+    it('does not supportFunction canCompleteAward', async () => {
+      await prizeStrategy.mock.canStartAward.returns(false)
+      await prizeStrategy.mock.canCompleteAward.revertsWithReason("2")
+      await expect(prizePoolUpkeep.callStatic.performUpkeep("0x")).to.be.revertedWith("2")
+    })
+
     it('does not supportFunction canCompleteAward', async () => {
       await prizeStrategy.mock.canStartAward.returns(false)
       await prizeStrategy.mock.canCompleteAward.revertsWithReason("2")
