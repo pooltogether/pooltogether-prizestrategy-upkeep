@@ -41,6 +41,9 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
     /// @notice Emitted when the Upkeep Minimum Block interval is updated
     event UpkeepMinimumBlockIntervalUpdated(uint256 upkeepMinimumBlockInterval);
 
+    /// @notice Emitted when the Upkeep has been performed
+    event UpkeepPerformed(uint8 startAwardsPerformed, uint8 completeAwardsPerformed);
+
 
     constructor(AddressRegistry _prizePoolRegistry, uint256 _upkeepBatchSize) Ownable() public {
         prizePoolRegistry = _prizePoolRegistry;
@@ -84,10 +87,13 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
 
         address[] memory prizePools = prizePoolRegistry.getAddresses();
 
+      
         uint256 batchCounter = upkeepBatchSize; //counter for batch
 
         uint256 poolIndex = 0;
-        
+        uint8 startAwardCounter = 0;
+        uint8 completeAwardCounter = 0;
+
         uint256 updatedUpkeepBlockNumber;
 
         while(batchCounter > 0 && poolIndex < prizePools.length){
@@ -97,11 +103,13 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
             if(prizeStrategy.canStartAward()){
                 PeriodicPrizeStrategyInterface(prizeStrategy).startAward();
                 updatedUpkeepBlockNumber = block.number;
+                startAwardCounter++;
                 batchCounter--;
             }
             else if(prizeStrategy.canCompleteAward()){
                 PeriodicPrizeStrategyInterface(prizeStrategy).completeAward();
                 updatedUpkeepBlockNumber = block.number;
+                completeAwardCounter++;
                 batchCounter--;
             }
             poolIndex++;            
@@ -110,6 +118,7 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
         // SSTORE upkeepLastUpkeepBlockNumber once
         if(_upkeepLastUpkeepBlockNumber != updatedUpkeepBlockNumber){
             upkeepLastUpkeepBlockNumber = updatedUpkeepBlockNumber;
+            emit UpkeepPerformed(startAwardCounter, startAwardCounter);
         }
   
     }

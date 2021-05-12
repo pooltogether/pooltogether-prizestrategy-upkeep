@@ -95,11 +95,11 @@ describe('PrizeStrategyUpkeep', function() {
   })
 
   describe('able to update the prize pool registry', () => {
-    // it('owner can update the registry', async () => {
-    //   await expect(prizePoolUpkeep.updatePrizePoolRegistry(prizePoolRegistry.address))
-    //   .to.emit(prizePoolUpkeep, "UpkeepPrizePoolRegistryUpdated")
-    //   .withArgs(prizePoolRegistry)
-    // })
+    it('owner can update the registry', async () => {
+      await expect(prizePoolUpkeep.updatePrizePoolRegistry(prizePoolRegistry.address))
+      .to.emit(prizePoolUpkeep, "UpkeepPrizePoolRegistryUpdated")
+      .withArgs(prizePoolRegistry.address)
+    })
     it('non-owner cannot update', async () => {
       await expect(prizePoolUpkeep.connect(wallet2).updatePrizePoolRegistry(SENTINAL))
       .to.be.reverted
@@ -150,14 +150,72 @@ describe('PrizeStrategyUpkeep', function() {
       await expect(prizePoolUpkeep.callStatic.performUpkeep("0x")).to.be.revertedWith("2")
     })
 
-    it('does not supportFunction canCompleteAward', async () => {
-      await prizeStrategy.mock.canStartAward.returns(false)
-      await prizeStrategy.mock.canCompleteAward.revertsWithReason("2")
-      await expect(prizePoolUpkeep.callStatic.performUpkeep("0x")).to.be.revertedWith("2")
-    })
-
   })
   
+  describe('upkeep outside interval', () => {
+
+    let mockContractFactory, mockContract
+
+    before(async() => {
+      mockContractFactory = await hre.ethers.getContractFactory("MockContract", wallet3, overrides)
+      mockContract = await mockContractFactory.deploy(SENTINAL)
+
+      const prizePoolRegistryContractFactory = await hre.ethers.getContractFactory("AddressRegistry", wallet, overrides)
+      prizePoolRegistry = await prizePoolRegistryContractFactory.deploy("Prize Pool", wallet.address)
+    
+      const prizePoolUpkeepContractFactory = await hre.ethers.getContractFactory("PrizeStrategyUpkeep", wallet, overrides)
+      prizePoolUpkeep = await prizePoolUpkeepContractFactory.deploy(prizePoolRegistry.address, 10)
+  
+  
+      const PrizePool = await hre.artifacts.readArtifact("PrizePool")
+      prizePool1 = await deployMockContract(wallet, PrizePool.abi, overrides)
+      prizePool2 = await deployMockContract(wallet, PrizePool.abi, overrides)
+  
+      
+      await prizePoolRegistry.addAddresses([prizePool1.address, prizePool2.address])
+  
+  
+      const PeriodicPrizeStrategy = await hre.artifacts.readArtifact("PeriodicPrizeStrategyInterface")
+      prizeStrategy = await deployMockContract(wallet, PeriodicPrizeStrategy.abi, overrides)
+
+      await prizePool1.mock.prizeStrategy.returns(prizeStrategy.address)
+      await prizePool2.mock.prizeStrategy.returns(prizeStrategy.address)
+
+    })
+
+    it('calls performWork() when interval expired', async () => {
+      
+      const upkeepInterval = 5
+      const provider = hre.ethers.provider
+
+      
+      await prizeStrategy.mock.canStartAward.returns(true)
+      await prizeStrategy.mock.canCompleteAward.returns(false)
+
+      
+      await prizeStrategy.mock.startAward.returns()
+      await prizeStrategy.mock.completeAward.returns()
+
+      await expect(prizePoolUpkeep.performUpkeep("0x")).to.emit(prizePoolUpkeep, "UpkeepPerformed")
+
+      await expect(prizePoolUpkeep.updateUpkeepMinimumBlockInterval(upkeepInterval)).
+      to.emit(prizePoolUpkeep, "UpkeepMinimumBlockIntervalUpdated")
+      
+      await expect(prizePoolUpkeep.performUpkeep("0x")).to.be.reverted
+
+      // move forward the upkeepIntervalnumber of blocks
+      for(let index = 0; index < upkeepInterval; index++){
+        await provider.send('evm_mine', [])
+      }
+      
+      await expect(prizePoolUpkeep.performUpkeep("0x")).to.emit(prizePoolUpkeep, "UpkeepPerformed")
+
+
+
+    })
+
+
+  })
 
 
 });
