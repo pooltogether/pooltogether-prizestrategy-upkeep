@@ -24,7 +24,7 @@ describe('PrizeStrategyUpkeep', function() {
     prizePoolRegistry = await prizePoolRegistryContractFactory.deploy("Prize Pool", wallet.address)
   
     const prizePoolUpkeepContractFactory = await hre.ethers.getContractFactory("PrizeStrategyUpkeep", wallet, overrides)
-    prizePoolUpkeep = await prizePoolUpkeepContractFactory.deploy(prizePoolRegistry.address, 10)
+    prizePoolUpkeep = await prizePoolUpkeepContractFactory.deploy(prizePoolRegistry.address, 10, 10)
 
 
     const PrizePool = await hre.artifacts.readArtifact("PrizePool")
@@ -164,7 +164,7 @@ describe('PrizeStrategyUpkeep', function() {
       prizePoolRegistry = await prizePoolRegistryContractFactory.deploy("Prize Pool", wallet.address)
     
       const prizePoolUpkeepContractFactory = await hre.ethers.getContractFactory("PrizeStrategyUpkeep", wallet, overrides)
-      prizePoolUpkeep = await prizePoolUpkeepContractFactory.deploy(prizePoolRegistry.address, 10)
+      prizePoolUpkeep = await prizePoolUpkeepContractFactory.deploy(prizePoolRegistry.address, 10, 10)
   
   
       const PrizePool = await hre.artifacts.readArtifact("PrizePool")

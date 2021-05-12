@@ -45,12 +45,15 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
     event UpkeepPerformed(uint8 startAwardsPerformed, uint8 completeAwardsPerformed);
 
 
-    constructor(AddressRegistry _prizePoolRegistry, uint256 _upkeepBatchSize) Ownable() public {
+    constructor(AddressRegistry _prizePoolRegistry, uint256 _upkeepBatchSize, uint256 _upkeepMinimumBlockInterval) Ownable() public {
         prizePoolRegistry = _prizePoolRegistry;
         emit UpkeepPrizePoolRegistryUpdated(_prizePoolRegistry);
 
         upkeepBatchSize = _upkeepBatchSize;
         emit UpkeepBatchSizeUpdated(_upkeepBatchSize);
+
+        upkeepMinimumBlockInterval = _upkeepMinimumBlockInterval;
+        emit UpkeepMinimumBlockIntervalUpdated(_upkeepMinimumBlockInterval);
     }
 
 
