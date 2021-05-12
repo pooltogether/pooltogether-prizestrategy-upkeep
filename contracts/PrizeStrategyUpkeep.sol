@@ -29,7 +29,7 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
     /// @notice Stores the last upkeep block number
     uint256 public upkeepLastUpkeepBlockNumber;
 
-    /// @notice Stores the last upkeep block number
+    /// @notice Stores the minimum block interval between permitted performUpkeep() calls
     uint256 public upkeepMinimumBlockInterval;
 
     /// @notice Emitted when the upkeepBatchSize has been changed
@@ -45,7 +45,7 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
     event UpkeepPerformed(uint8 startAwardsPerformed, uint8 completeAwardsPerformed);
 
 
-    constructor(AddressRegistry _prizePoolRegistry, uint256 _upkeepBatchSize, uint256 _upkeepMinimumBlockInterval) Ownable() public {
+    constructor(AddressRegistry _prizePoolRegistry, uint256 _upkeepBatchSize, uint256 _upkeepMinimumBlockInterval) public Ownable() {
         prizePoolRegistry = _prizePoolRegistry;
         emit UpkeepPrizePoolRegistryUpdated(_prizePoolRegistry);
 
@@ -86,7 +86,7 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
     function performUpkeep(bytes calldata performData) override external {
 
         uint256 _upkeepLastUpkeepBlockNumber = upkeepLastUpkeepBlockNumber;
-        require(block.number > _upkeepLastUpkeepBlockNumber + upkeepMinimumBlockInterval);
+        require(block.number > _upkeepLastUpkeepBlockNumber + upkeepMinimumBlockInterval, "PrizeStrategyUpkeep::minimum block interval not reached");
 
         address[] memory prizePools = prizePoolRegistry.getAddresses();
 
