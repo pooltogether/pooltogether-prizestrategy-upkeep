@@ -3,7 +3,6 @@
 pragma solidity ^0.7.6;
 pragma experimental ABIEncoderV2;
 
-
 import "./interfaces/KeeperCompatibleInterface.sol";
 import "./interfaces/PeriodicPrizeStrategyInterface.sol";
 import "./interfaces/PrizePoolRegistryInterface.sol";
@@ -26,19 +25,34 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
     /// @dev Set accordingly to prevent out-of-gas transactions during calls to performUpkeep
     uint256 public upkeepBatchSize;
 
+    /// @notice Stores the last upkeep block number
+    uint256 public upkeepLastUpkeepBlockNumber;
+
+    /// @notice Stores the minimum block interval between permitted performUpkeep() calls
+    uint256 public upkeepMinimumBlockInterval;
+
     /// @notice Emitted when the upkeepBatchSize has been changed
     event UpkeepBatchSizeUpdated(uint256 upkeepBatchSize);
 
     /// @notice Emitted when the prize pool registry has been changed
     event UpkeepPrizePoolRegistryUpdated(AddressRegistry prizePoolRegistry);
 
+    /// @notice Emitted when the Upkeep Minimum Block interval is updated
+    event UpkeepMinimumBlockIntervalUpdated(uint256 upkeepMinimumBlockInterval);
 
-    constructor(AddressRegistry _prizePoolRegistry, uint256 _upkeepBatchSize) Ownable() public {
+    /// @notice Emitted when the Upkeep has been performed
+    event UpkeepPerformed(uint256 startAwardsPerformed, uint256 completeAwardsPerformed);
+
+
+    constructor(AddressRegistry _prizePoolRegistry, uint256 _upkeepBatchSize, uint256 _upkeepMinimumBlockInterval) public Ownable() {
         prizePoolRegistry = _prizePoolRegistry;
         emit UpkeepPrizePoolRegistryUpdated(_prizePoolRegistry);
 
         upkeepBatchSize = _upkeepBatchSize;
         emit UpkeepBatchSizeUpdated(_upkeepBatchSize);
+
+        upkeepMinimumBlockInterval = _upkeepMinimumBlockInterval;
+        emit UpkeepMinimumBlockIntervalUpdated(_upkeepMinimumBlockInterval);
     }
 
 
@@ -70,24 +84,45 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
     /// @param performData Not used in this implementation.
     function performUpkeep(bytes calldata performData) override external {
 
+        uint256 _upkeepLastUpkeepBlockNumber = upkeepLastUpkeepBlockNumber;
+        require(block.number > _upkeepLastUpkeepBlockNumber + upkeepMinimumBlockInterval, "PrizeStrategyUpkeep::minimum block interval not reached");
+
         address[] memory prizePools = prizePoolRegistry.getAddresses();
 
+      
         uint256 batchCounter = upkeepBatchSize; //counter for batch
+
         uint256 poolIndex = 0;
-        
+        uint256 startAwardCounter = 0;
+        uint256 completeAwardCounter = 0;
+
+        uint256 updatedUpkeepBlockNumber;
+
         while(batchCounter > 0 && poolIndex < prizePools.length){
             
             address prizeStrategy = PrizePoolInterface(prizePools[poolIndex]).prizeStrategy();
             
             if(prizeStrategy.canStartAward()){
                 PeriodicPrizeStrategyInterface(prizeStrategy).startAward();
+                startAwardCounter++;
                 batchCounter--;
             }
             else if(prizeStrategy.canCompleteAward()){
-                PeriodicPrizeStrategyInterface(prizeStrategy).completeAward();
+                PeriodicPrizeStrategyInterface(prizeStrategy).completeAward();       
+                completeAwardCounter++;
                 batchCounter--;
             }
             poolIndex++;            
+        }
+        
+        if(startAwardCounter > 0 || completeAwardCounter > 0){
+            updatedUpkeepBlockNumber = block.number;
+        }
+
+        // SSTORE upkeepLastUpkeepBlockNumber once
+        if(_upkeepLastUpkeepBlockNumber != updatedUpkeepBlockNumber){
+            upkeepLastUpkeepBlockNumber = updatedUpkeepBlockNumber;
+            emit UpkeepPerformed(startAwardCounter, completeAwardCounter);
         }
   
     }
@@ -106,6 +141,14 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
     function updatePrizePoolRegistry(AddressRegistry _prizePoolRegistry) external onlyOwner {
         prizePoolRegistry = _prizePoolRegistry;
         emit UpkeepPrizePoolRegistryUpdated(_prizePoolRegistry);
+    }
+
+
+    /// @notice Updates the upkeep minimum interval blocks
+    /// @param _upkeepMinimumBlockInterval New upkeepMinimumBlockInterval
+    function updateUpkeepMinimumBlockInterval(uint256 _upkeepMinimumBlockInterval) external onlyOwner {
+        upkeepMinimumBlockInterval = _upkeepMinimumBlockInterval;
+        emit UpkeepMinimumBlockIntervalUpdated(_upkeepMinimumBlockInterval);
     }
 
 }
