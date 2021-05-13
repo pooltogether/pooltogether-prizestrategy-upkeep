@@ -3,7 +3,6 @@
 pragma solidity ^0.7.6;
 pragma experimental ABIEncoderV2;
 
-
 import "./interfaces/KeeperCompatibleInterface.sol";
 import "./interfaces/PeriodicPrizeStrategyInterface.sol";
 import "./interfaces/PrizePoolRegistryInterface.sol";
@@ -42,7 +41,7 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
     event UpkeepMinimumBlockIntervalUpdated(uint256 upkeepMinimumBlockInterval);
 
     /// @notice Emitted when the Upkeep has been performed
-    event UpkeepPerformed(uint8 startAwardsPerformed, uint8 completeAwardsPerformed);
+    event UpkeepPerformed(uint256 startAwardsPerformed, uint256 completeAwardsPerformed);
 
 
     constructor(AddressRegistry _prizePoolRegistry, uint256 _upkeepBatchSize, uint256 _upkeepMinimumBlockInterval) public Ownable() {
@@ -94,8 +93,8 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
         uint256 batchCounter = upkeepBatchSize; //counter for batch
 
         uint256 poolIndex = 0;
-        uint8 startAwardCounter = 0;
-        uint8 completeAwardCounter = 0;
+        uint256 startAwardCounter = 0;
+        uint256 completeAwardCounter = 0;
 
         uint256 updatedUpkeepBlockNumber;
 
@@ -105,23 +104,25 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
             
             if(prizeStrategy.canStartAward()){
                 PeriodicPrizeStrategyInterface(prizeStrategy).startAward();
-                updatedUpkeepBlockNumber = block.number;
                 startAwardCounter++;
                 batchCounter--;
             }
             else if(prizeStrategy.canCompleteAward()){
-                PeriodicPrizeStrategyInterface(prizeStrategy).completeAward();
-                updatedUpkeepBlockNumber = block.number;
+                PeriodicPrizeStrategyInterface(prizeStrategy).completeAward();       
                 completeAwardCounter++;
                 batchCounter--;
             }
             poolIndex++;            
         }
+        
+        if(startAwardCounter > 0 || completeAwardCounter > 0){
+            updatedUpkeepBlockNumber = block.number;
+        }
 
         // SSTORE upkeepLastUpkeepBlockNumber once
         if(_upkeepLastUpkeepBlockNumber != updatedUpkeepBlockNumber){
             upkeepLastUpkeepBlockNumber = updatedUpkeepBlockNumber;
-            emit UpkeepPerformed(startAwardCounter, startAwardCounter);
+            emit UpkeepPerformed(startAwardCounter, completeAwardCounter);
         }
   
     }
