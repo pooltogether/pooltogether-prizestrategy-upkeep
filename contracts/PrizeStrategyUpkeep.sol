@@ -59,8 +59,12 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
     /// @notice Checks if PrizePools require upkeep. Call in a static manner every block by the Chainlink Upkeep network.
     /// @param checkData Not used in this implementation.
     /// @return upkeepNeeded as true if performUpkeep() needs to be called, false otherwise. performData returned empty. 
-    function checkUpkeep(bytes calldata checkData) view override external returns (bool upkeepNeeded, bytes memory performData) {
+    function checkUpkeep(bytes calldata checkData) external view override returns (bool upkeepNeeded, bytes memory performData) {
 
+        if(block.number < upkeepLastUpkeepBlockNumber + upkeepMinimumBlockInterval){
+            return (false, performData);
+        }
+        
         address[] memory prizePools = prizePoolRegistry.getAddresses();
 
         // check if canStartAward()
@@ -82,9 +86,9 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
     
     /// @notice Performs upkeep on the prize pools. 
     /// @param performData Not used in this implementation.
-    function performUpkeep(bytes calldata performData) override external {
+    function performUpkeep(bytes calldata performData) external override {
 
-        uint256 _upkeepLastUpkeepBlockNumber = upkeepLastUpkeepBlockNumber;
+        uint256 _upkeepLastUpkeepBlockNumber = upkeepLastUpkeepBlockNumber; // SLOAD
         require(block.number > _upkeepLastUpkeepBlockNumber + upkeepMinimumBlockInterval, "PrizeStrategyUpkeep::minimum block interval not reached");
 
         address[] memory prizePools = prizePoolRegistry.getAddresses();
@@ -119,9 +123,9 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
             updatedUpkeepBlockNumber = block.number;
         }
 
-        // SSTORE upkeepLastUpkeepBlockNumber once
+        // update if required
         if(_upkeepLastUpkeepBlockNumber != updatedUpkeepBlockNumber){
-            upkeepLastUpkeepBlockNumber = updatedUpkeepBlockNumber;
+            upkeepLastUpkeepBlockNumber = updatedUpkeepBlockNumber; //SSTORE
             emit UpkeepPerformed(startAwardCounter, completeAwardCounter);
         }
   
