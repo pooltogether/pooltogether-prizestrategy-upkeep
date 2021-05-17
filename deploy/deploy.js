@@ -22,8 +22,8 @@ module.exports = async (hardhat) => {
     const namedSigners = await ethers.getNamedSigners()
     const deployerSigner = namedSigners.deployer
 
-    const batchSize = 3
-    const blockInterval = 10;
+    const batchSize = 2
+    const blockInterval = 15;
 
     dim(`deploying PrizeStrategyUpkeep contract from ${deployer}`)
     console.log("prizePoolRegistry at ", prizePoolRegistry)
