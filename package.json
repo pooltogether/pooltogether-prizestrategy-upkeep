@@ -1,6 +1,6 @@
 {
   "name": "@pooltogether/pooltogether-prizestrategy-upkeep",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "Upkeep integration contracts for the PoolTogether protocol",
   "author": "Aodhgan Gleeson",
   "license": "MIT",
