@@ -216,6 +216,15 @@ describe('PrizeStrategyUpkeep', function() {
       await expect(prizePoolUpkeep.performUpkeep("0x")).to.emit(prizePoolUpkeep, "UpkeepPerformed")
     })
 
+    it('checkUpkeep() returns false when outside interval', async () => {
+
+      const interval = 100
+
+      await prizePoolUpkeep.updateUpkeepMinimumBlockInterval(interval)
+      const result = await prizePoolUpkeep.checkUpkeep("0x")
+      expect(result.upkeepNeeded).to.equal(false)
+    })
+
     it('can execute completeAward() and emit event', async () => {
       await prizeStrategy.mock.canCompleteAward.returns(true)
       await prizeStrategy.mock.canStartAward.returns(false)
