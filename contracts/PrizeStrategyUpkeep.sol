@@ -61,6 +61,10 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
     /// @return upkeepNeeded as true if performUpkeep() needs to be called, false otherwise. performData returned empty. 
     function checkUpkeep(bytes calldata checkData) external view override returns (bool upkeepNeeded, bytes memory performData) {
 
+        if(block.number < upkeepLastUpkeepBlockNumber + upkeepMinimumBlockInterval){
+            return (false, performData);
+        }
+        
         address[] memory prizePools = prizePoolRegistry.getAddresses();
 
         // check if canStartAward()
