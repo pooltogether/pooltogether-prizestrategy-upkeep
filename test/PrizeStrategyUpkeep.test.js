@@ -82,6 +82,29 @@ describe('PrizeStrategyUpkeep', function() {
     })
   })
 
+  describe('owner can pause contract and upkeep cannot be performed', () => {
+    it('owner can pause', async () => {
+      await expect(prizePoolUpkeep.pause())
+      .to.emit(prizePoolUpkeep, "Paused")
+
+      await prizeStrategy.mock.canStartAward.returns(true)
+      await prizeStrategy.mock.startAward.revertsWithReason("startAward")
+      await expect(prizePoolUpkeep.performUpkeep("0x")).to.be.revertedWith("paused")
+
+      await expect(prizePoolUpkeep.unpause())
+      .to.emit(prizePoolUpkeep, "Unpaused")
+
+      await prizeStrategy.mock.canStartAward.returns(true)
+      await prizeStrategy.mock.startAward.revertsWithReason("startAward")
+      await expect(prizePoolUpkeep.performUpkeep("0x")).to.be.revertedWith("startAward")
+
+    })
+    it('non-owner cannot pause', async () => {
+      await expect(prizePoolUpkeep.connect(wallet2).pause())
+      .to.be.reverted
+    })
+  })
+
   describe('able to update the upkeepMinimumBlockInterval', () => {
     it('owner can update', async () => {
       await expect(prizePoolUpkeep.updateUpkeepMinimumBlockInterval(10))
