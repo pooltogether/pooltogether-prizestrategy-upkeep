@@ -11,9 +11,10 @@ import "./utils/SafeAwardable.sol";
 
 import "@pooltogether/pooltogether-generic-registry/contracts/AddressRegistry.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
 
 ///@notice Contract implements Chainlink's Upkeep system interface, automating the upkeep of PrizePools in the associated registry. 
-contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
+contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable, Pausable {
 
     /// @notice Ensures the target address is a prize strategy (has both canStartAward and canCompleteAward)
     using SafeAwardable for address;
@@ -86,7 +87,7 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
     
     /// @notice Performs upkeep on the prize pools. 
     /// @param performData Not used in this implementation.
-    function performUpkeep(bytes calldata performData) external override {
+    function performUpkeep(bytes calldata performData) external override whenNotPaused {
 
         uint256 _upkeepLastUpkeepBlockNumber = upkeepLastUpkeepBlockNumber; // SLOAD
         require(block.number > _upkeepLastUpkeepBlockNumber + upkeepMinimumBlockInterval, "PrizeStrategyUpkeep::minimum block interval not reached");
@@ -153,6 +154,16 @@ contract PrizeStrategyUpkeep is KeeperCompatibleInterface, Ownable {
     function updateUpkeepMinimumBlockInterval(uint256 _upkeepMinimumBlockInterval) external onlyOwner {
         upkeepMinimumBlockInterval = _upkeepMinimumBlockInterval;
         emit UpkeepMinimumBlockIntervalUpdated(_upkeepMinimumBlockInterval);
+    }
+
+    /// @notice Pauses the contract. Only callable by owner.
+    function pause() external onlyOwner {
+        _pause();
+    }
+
+    /// @notice Unpauses the contract. Only callable by owner.
+    function unpause() external onlyOwner {
+        _unpause();
     }
 
 }
