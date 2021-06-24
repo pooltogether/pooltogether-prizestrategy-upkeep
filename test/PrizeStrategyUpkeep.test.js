@@ -68,6 +68,12 @@ describe('PrizeStrategyUpkeep', function() {
       const resultArr = await prizePoolUpkeep.callStatic.checkUpkeep("0x")
       expect(resultArr[0]).to.be.equal(false)
     })
+    it('contract paused', async () => {
+      await prizePoolUpkeep.pause()
+      const resultArr = await prizePoolUpkeep.callStatic.checkUpkeep("0x")
+      expect(resultArr[0]).to.be.equal(false)
+      await prizePoolUpkeep.unpause()
+    })
   })
 
   describe('able to update the upkeepBatchSize', () => {
